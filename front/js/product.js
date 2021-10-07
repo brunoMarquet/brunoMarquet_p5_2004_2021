@@ -3,57 +3,63 @@
 //let url = "http://localhost:3000/back/product ";
 //url = "http://localhost:3000/api/teddies/id/;
 //retrieving the URL parameter
-const urlParams = new URLSearchParams(window.location.search);
-const product_id = urlParams.get("id");
-let le_canap;
-//console.log(product_id);
 
-//Url
+init_produit();
 
-url = "http://localhost:3000/api/teddies/" + product_id;
+function init_produit() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const product_id = urlParams.get("id");
 
-//Product
-fetch(url, { method: "GET" })
-  .then((data) => {
-    return data.json();
-  })
-  .then((product) => {
-    built_un_produit(product);
-  })
-  .catch(function (error) {
-    edit_erreur(error);
-  });
+  url = "http://localhost:3000/api/teddies/" + product_id;
+
+  //Product
+  fetch(url, { method: "GET" })
+    .then((data) => {
+      return data.json();
+    })
+    .then((product) => {
+      built_un_produit(product);
+    })
+    .catch(function (error) {
+      edit_erreur(error);
+    });
+
+  //recup_panier();
+
+  document.getElementById("header").innerHTML = ecrire_header();
+  document.getElementById("footer").innerHTML = ecrire_footer();
+}
 
 function built_un_produit(ki) {
-  document.title = ki.name;
+  edit_titre(ki.name);
 
-  le_canap = un_canap(ki);
+  Le_produit = un_produit(ki);
   //let bloc_item = document.querySelector("item");
   let inner_2 = document.getElementsByTagName("article")[0];
   tt_option = "";
-  nbre_color = le_canap.couleurs.length;
+  nbre_color = Le_produit.couleurs.length;
   for (i = 0; i < nbre_color; i++) {
-    koi = le_canap.couleurs[i];
-    tt_option += `<option value="${koi}">${koi}</option>`;
+    koi = Le_produit.couleurs[i];
+    tt_option += `<option value="${i}">${koi}</option>`;
   }
 
   tt = `<div class="item__img">
-  <img src="${le_canap.image}" alt="${le_canap.alt_img}">
+  <img src="${Le_produit.image}" alt="${Le_produit.alt_img}">
 </div>
 <div class="item__content">
 <div class="item__content__titlePrice">
-    <h1 id="title">${le_canap.nom}</h1>
-    <p>Prix : <span id="price">${le_canap.prix}</span>€</p>
+    <h1 id="title">${Le_produit.nom}</h1>
+    <p>Prix : <span id="price">${Le_produit.prix}</span>€</p>
   </div>
 <div class="item__content__description">
     <p class="item__content__description__title">Description :</p>
-    <p id="description">${le_canap.legende}</p>
+    <p id="description">${Le_produit.legende}</p>
   </div>
 <div class="item__content__settings">
     <div class="item__content__settings__color">
       <label for="color-select">Choisir une taille :</label>
       <select name="color-select" id="colors">
-          <option value="">--SVP, choisissez parmi ${nbre_color} couleurs  --</option>${tt_option}
+          <option value=-1>--SVP, choisissez parmi ${nbre_color} couleurs  --</option>${tt_option}
  </select>
     </div>
     <div class="item__content__settings__quantity">
@@ -68,10 +74,9 @@ function built_un_produit(ki) {
   <div id="message_erreur"></div>
 </div>`;
 
-  inner_2.innerHTML = tt; //le_canap.nom;
-  //
-  in_info1 = document.getElementById("message_erreur");
+  inner_2.innerHTML = tt;
 
+  in_info1 = document.getElementById("message_erreur");
   document.getElementById("addToCart").addEventListener("click", ajout_panier);
 }
 
@@ -85,22 +90,30 @@ function ajout_panier() {
     vtt += "Merci de choisir une quantité svp !<br>";
     v_err++;
   }
-  if (couleur == 0) {
-    vtt += "Merci de choisir la couleur svp!";
+  if (couleur == -1) {
+    vtt += "Merci de choisir la couleur svp !";
     v_err++;
   }
 
   if (v_err == 0) {
-    in_info1.innerHTML =
+    //adeplacer
+    //Le_produit.choix_couleur = couleur;
+    // Le_produit.qty = qte;
+
+    Le_produit.commander(qte, couleur);
+
+    tt =
       qte +
       " " +
-      le_canap.nom +
+      Le_produit.nom +
       " de couleur " +
       couleur +
       " ajouté(s) à votre panier";
+    in_info1.innerHTML = tt;
+
     /*num = localStorage.getItem("num_ligne_cde");
     num++;
-    localStorage.setItem("cde." + num, le_canap.id + "_" + qte + "_" + couleur);
+    localStorage.setItem("cde." + num, Le_produit.id + "_" + qte + "_" + couleur);
     localStorage.settItem("num_ligne_cde", num);
 
     //inner_erreur.innerHTML = "";*/
