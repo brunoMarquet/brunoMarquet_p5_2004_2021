@@ -49,13 +49,21 @@ h2 {
 /********/
 #info_panier {
   /* visibility: hidden;*/
+
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   margin-left: 60%;
   margin-top: 20px;
-  padding: 10px;
-  font-size: 13px;
+  padding: 20px;
+  font-size: 16px;
   background-color: var(--main-color);
   border-radius: 10px;
-  border: 1px solid black;
+  border: 5px solid black;
+}
+.informations__address:hover {
+  cursor: pointer;
 }
 
 /********/

@@ -19,6 +19,24 @@ h2 {
   color: blue;
 }
 
+.bton_nbr {
+  display: inline-block;
+  text-align: center;
+  background-color: azure;
+  padding: 6px;
+  max-resolution: 12px;
+  width: 24px;
+  height: 24px;
+  size: 16px;
+  color: blue;
+  border-radius: 5px;
+  border: 2px solide black;
+}
+.bton_nbr:hover {
+  cursor: pointer;
+  color: red;
+}
+
 /************/
 /*Cart Items*/
 /************/

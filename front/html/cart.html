@@ -19,49 +19,24 @@
   </head>
 
   <body>
-    <header id="header"></header>
+    <header id="header"><nav>
+      <ul>
+      <a href="param.html"><li>paramètres</li></a>
+        <a href="./index.html"><li>Accueil</li></a>
+        <a href="./cart.html"><li>Panier</li></a>
+        <a href="../temp/cart2.html"><li>Panier2</li></a>
+    </nav></header>
 
     <main class="limitedWidthBlockContainer">
       <div class="limitedWidthBlock" id="limitedWidthBlock">
         <div class="cartAndFormContainer" id="cartAndFormContainer">
           <h1>Votre panier</h1>
-          <section class="cart">
-            <section id="cart__items">
-              <!-- -->
-              <article class="cart__item" data-id="{product-ID}">
-                <div class="cart__item__img">
-                  <img
-                    src="../images/logo.png"
-                    alt="Photographie d'un canapé"
-                  />
-                </div>
-                <div class="cart__item__content">
-                  <div class="cart__item__content__titlePrice">
-                    <h2>Nom du produit</h2>
-                    <p>42,00 €</p>
-                  </div>
-                  <div class="cart__item__content__settings">
-                    <div class="cart__item__content__settings__quantity">
-                      <p>Qté :</p>
-                      <input
-                        type="number"
-                        class="itemQuantity"
-                        name="itemQuantity"
-                        min="1"
-                        max="100"
-                        value="42"
-                      />
-                    </div>
-                    <div class="cart__item__content__settings__delete">
-                      <p class="deleteItem">Supprimer</p>
-                    </div>
-                  </div>
-                </div>
-              </article>
-              -->
-              <input type="checkbox" id="j_accepte" name="j_accepte" />accepter
-              nos conditions
-            </section>
+          <div id="total"></div>
+          <section class="cart" id="panier"></section>
+
+          <section>
+            <input type="checkbox" id="j_accepte" name="j_accepte" />accepter
+            nos conditions
             <div class="cart__price">
               <p>
                 Total (<span id="totalQuantity"><!-- 2 --></span> articles) :
@@ -142,14 +117,10 @@
         </div>
       </div>
     </main>
-    <a
-      href="mailto:contact@lachouetteagence.com?subject=Mail%20de%20
-          contact%20depuis%20notre%20site%20la%20chouette%20agence.com"
-      >TRUC BETISE</a
-    >
+
     <footer id="footer"></footer>
     <script src="../js/include_edito.js"></script>
-    <script src="../js/script.js"></script>
+    <script src="../js/main.js"></script>
 
     <script src="../js/cart.js"></script>
   </body>
