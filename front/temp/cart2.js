@@ -4,11 +4,14 @@ caractere :/[abc]+/g
 pas de chiffre "/[^1-9]/g;";
 int <100:^[1-9][0-9]?$|^100$
 */
-let url1 = "http://localhost:3000/api/teddies/order";
+let url1 = "http://localhost:3000/api/products/order";
 let arrayKey = [];
 
 let preRemplir = 1;
-let listProd = ["cacb65d43b2b5c1ff70f3393ad1"];
+let listProd = [
+  "cacb65d43b2b5c1ff70f3393ad1",
+  "107fb5b75607497b96722bda5b504926",
+];
 
 let contact = {
   firstName: "",
@@ -76,8 +79,7 @@ function init_cart() {
       let lexemple = preRemplir == 1 ? "value='" + valeur.exemple + "'" : "";
       tt += `<div class="cart__order__form__question">
         <label for="${key}">${valeur.entete}: </label>
-       <input type="${valeur.type}" id="${key}" name="${key}" placeholder="${valeur.pholder}" 
-       onchange="verif(' /^[-'a-zA-ZÀ-ÖØ-öø-ÿ\s]+$/')" ${lexemple} >
+       <input type="${valeur.type}" id="${key}" name="${key}" placeholder="${valeur.pholder}" ${lexemple} >
         <p id="${key}ErrorMsg">${valeur.pholder}</p>
 
         `;
@@ -99,57 +101,78 @@ function razForm() {
   }
 }
 //function valder() {}
-function controleValeur(value) {
+function estValide(value) {
   let regle = /[^1-9]/g;
   regle = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-  if (regle.test(value)) {
-    return true;
-  } else {
-    return false;
-  }
+  return regle.test(value);
 }
 
 function test_order() {
-  //console.log("test " + controleValeur("jeanValjean222@free.fr"));
   let vm = arrayKey.length;
-  let cpterreur = 0;
+  let cptErreur = 0;
   for (let i = 0; i < vm; i++) {
     key = arrayKey[i];
     valeur = document.getElementById(key).value;
     let inner1 = document.getElementById(key + "ErrorMsg");
-    //console.log(key + "ErrorMsg");
+
     if (contact.hasOwnProperty(key)) {
       //console.log(valeur + " : " + controleValeur(valeur));
-      if (controleValeur(valeur)) {
+      if (estValide(valeur)) {
         console.log(valeur + "ok");
         inner1.innerHTML = "PARFAIT";
         contact.key = valeur;
       } else {
-        contact.key = "pas défini";
+        cptErreur++;
+        contact.key = valeur + "-faux";
         inner1.innerHTML = "C'est FAUX";
       }
 
       console.log(key + " ; " + contact.key);
-      //valider(contact, listProd);
     }
   }
+  contact = {
+    firstName: "Pierre-henry",
+    lastName: "Dupont-Telle2",
+    address: "3 rue des martyrs,Paris",
+    city: "75019",
+    email: "dupont456@gmail.com",
+  };
+
+  const envoiPoster = {
+    contact: contact,
+    products: [],
+    /* 
+      "cacb65d43b2b5c1ff70f3393ad1",
+      "107fb5b75607497b96722bda5b504926",
+    ], */
+    //listProd,
+  };
+
+  // console.log(envoiPoster.contact);
+
+  // return;
+
+  valider(envoiPoster);
   //localStorage.setItem("contact", JSON.stringify(contact));
 }
 
-function valider() {
+function valider(envoiPoster) {
   fetch(url1, {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(contact, listProd),
+    body: JSON.stringify(envoiPoster),
   })
     .then((res) => {
-      alert(res);
+      console.log("Reponse:  " + JSON.stringify(res));
+      // alert(res);
     })
     .catch(function (error) {
-      myModProduit.editErreur(error);
+      console.log("erreur:  " + error);
+
+      //myModProduit.editErreur(error);
     });
 }
 //event.stopPropagation();

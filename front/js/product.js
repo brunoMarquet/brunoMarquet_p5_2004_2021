@@ -1,5 +1,6 @@
-/* import * as myModule from "../module/editHtml.js";
-import * as myModule2 from "../module/parametres.js";*/
+import * as myModule from "../module/editHtml.js";
+import * as myModule2 from "../module/parametres.js";
+import * as myModProduit from "../module/produit.js";
 
 //cacb65d43b2b5c1ff70f3393ad1
 let url = "http://localhost:3000/back/product ";
@@ -20,7 +21,7 @@ function initLeProduit() {
   const urlParams = new URLSearchParams(window.location.search);
   const product_id = urlParams.get("id");
 
-  url = "http://localhost:3000/api/teddies/" + product_id;
+  url = "http://localhost:3000/api/products/" + product_id;
   //Product
   fetch(url, { method: "GET" })
     .then((data) => {
@@ -34,13 +35,17 @@ function initLeProduit() {
       console.log(error);
       //  edit_erreur(error);
     });
-
-  //recup_panier();
+  document.getElementById("header").innerHTML = myModule.ecrireHeader(
+    myModule2.adresse
+  );
+  document.getElementById("footer").innerHTML = myModule.ecrireFooter(
+    myModule2.adresse
+  );
 }
 function recupLigne(identifiant) {
   let a = -1;
-  vm = lePanier.length;
-  for (i = 0; i < vm; i++) {
+  let vm = lePanier.length;
+  for (let i = 0; i < vm; i++) {
     if (identifiant == lePanier[i]._id) {
       a = i;
     }
@@ -144,17 +149,6 @@ function commander(qte, couleur) {
     console.log("n qte " + leProduit.listeLigneCde[a].qty);
   }
   return;
-  /* 
-  Panier.push(this);
-  const legende1 = this.legende;
-  this.legende = "";
-  //Les_objets.push(this);
-  //localStorage.setItem("les_obj", JSON.stringify(Les_objets));
-  this.legende = legende1;
-  le_prix = le_prix + this.prix * qte;
-  document.getElementById("info_panier").innerHTML = le_prix + " €";
-  localStorage.setItem("panier", JSON.stringify(Panier));
-  alert(localStorage.getItem("panier")); */
 }
 
 function ligne_c(qte, color) {
@@ -168,7 +162,7 @@ function ligne_c(qte, color) {
 function affichLeProduit(leCanap) {
   document.title = leCanap.name;
 
-  a = recupLigne(leCanap._id);
+  let a = recupLigne(leCanap._id);
   let messText = "";
 
   if (a == -1) {
@@ -199,8 +193,8 @@ function affichLeProduit(leCanap) {
 
   let nbre_color = leProduit.colors.length;
 
-  for (i = 0; i < nbre_color; i++) {
-    koi = leProduit.colors[i];
+  for (let i = 0; i < nbre_color; i++) {
+    let koi = leProduit.colors[i];
     tt_option += `<option value="${i}">${koi}</option>`;
   }
 
@@ -232,6 +226,7 @@ function affichLeProduit(leCanap) {
       <div class="item__content__addButton">
       <button id="addToCart">Ajouter au panier</button>
     </div><br>
+    
     <div id="prix_ligne">tt</div>
     <div id="message_info"></div>
     <div id="message_erreur"></div>
@@ -242,6 +237,6 @@ function affichLeProduit(leCanap) {
   const in_info1 = document.getElementById("message_info");
   const in_info_erreur = document.getElementById("message_erreur");
 
-  document.getElementById("addToCart").addEventListener("click", ajoutPpanier);
+  document.getElementById("addToCart").addEventListener("click", ajoutPanier);
   in_info1.innerHTML = messText;
 }

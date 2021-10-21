@@ -1,9 +1,7 @@
 const express = require('express');
 const path = require('path');
 
-
-const teddyRoutes = require('./routes/teddy');
-
+const productRoutes = require('./routes/product');
 
 const app = express();
 
@@ -20,8 +18,6 @@ app.use(express.static('images'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-
-app.use('/api/teddies', teddyRoutes);
-
+app.use('/api/products', productRoutes);
 
 module.exports = app;

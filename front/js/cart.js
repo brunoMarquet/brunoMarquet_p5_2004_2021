@@ -162,6 +162,15 @@ function init_cart() {
   document.getElementById("header").innerHTML = ecrire_header(Coord);
   document.getElementById("footer").innerHTML = ecrire_footer(Coord);
 }
+
+let Contact = {
+  firstName: "Pierre-henry",
+  lastName: "Dupont-Telle2",
+  address: "3 rue des martyrs,Paris",
+  city: 75019,
+  email: "dupont456@gmail.com",
+};
+
 function test_order() {
   vm = tab_prop.length;
   for (i = 0; i < vm; i++) {

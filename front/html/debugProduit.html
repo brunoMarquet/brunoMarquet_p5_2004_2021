@@ -1,0 +1,192 @@
+!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>Nom du produit</title>
+
+    <meta charset="utf-8" />
+    <meta name="description" content="Plateforme incroyable de e-commerce" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link href="../css/style.css" rel="stylesheet" />
+    <link href="../css/product.css" rel="stylesheet" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+    
+  leProduit = {
+    colors: ["Pink", "Brown", "Yellow", "White"],
+    _id: "a6ec5b49bd164d7fbe10f37b6363f9fb",
+    name: "Kanap orthosie",
+    price: 3999,
+    imageUrl: "kanap08.jpeg",
+    description:
+      "Mauris molestie laoreet finibus. Aenean scelerisque convallis lacus at dapibus. Morbi imperdiet enim metus rhoncus.",
+    altTxt: "Photo d'un canapé rose, trois places",
+    listeLigneCde:[],
+};
+  contact = {
+  firstName: "Pierre-henry",
+  lastName: "Dupont-Telle2",
+  address: "3 rue des martyrs,Paris",
+  city: "75019 paris",
+  email: "dupont456@gmail.com",
+};
+    </script>
+  </head>
+
+  <body>
+    <header id="header"><nav>
+      <ul>
+      <a href="param.html"><li>paramètres</li></a>
+        <a href="./index.html"><li>Accueil</li></a>
+        <a href="./cart.html"><li>Panier</li></a>
+        <a href="../temp/cart2.html"><li>Panier2</li></a>
+    </nav></header>
+    <main class="limitedWidthBlockContainer">
+      <div class="limitedWidthBlock">
+        <section class="item" id="theItem" >
+          <article></article>
+        </section>
+      </div>
+    </main>
+    <!-- template -->
+    <template id="templateArticle">
+      <article>
+        <div class="item__img">
+          <img src="../images/logo.png" alt="Photographie d'un canapé">
+        </div>
+        <div class="item__content">
+
+          <div class="item__content__titlePrice">
+            <h1 id="title"><!-- Nom du produit -->titi</h1>
+            <p>Prix : <span id="price"><!-- 42 --></span>€</p>
+          </div>
+
+          <div class="item__content__description">
+            <p class="item__content__description__title">Description :</p>
+            <p id="description"><!-- Dis enim malesuada risus sapien gravida nulla nisl arcu. --></p>
+          </div>
+
+          <div class="item__content__settings">
+            <div class="item__content__settings__color">
+              <label for="color-select">Choisir une couleur :</label>
+              <select name="color-select" id="colors">
+                  <option value="">--SVP, choisissez une couleur --</option>
+                    <!--   <option value="vert">vert</option>
+                  <option value="blanc">blanc</option> -->
+              </select>
+            </div>
+
+            <div class="item__content__settings__quantity">
+              <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
+              <input type="number" name="itemQuantity" min="1" max="100" value="0" id="quantity">
+            </div>
+            <ul vos commandes:>
+              <li>cde :</li>
+            </ul>
+          </div>
+
+          <div class="item__content__addButton">
+            <button id="addToCart">Ajouter au panier</button>
+          </div>
+
+        </div>
+      </article>
+    </template>
+
+    <footer id="footer"></footer>
+
+    <!-- <script src="../test1410.js"></script> -->
+ 
+<script>
+
+let rustine_img="http://localhost:3000/images/";
+leProduit.listeLigneCde=[{}]
+document.getElementById("theItem").appendChild(ecrireTemplate());
+document.getElementById("addToCart").addEventListener("click", ajoutPanier);
+//truc
+let b = new ligne_c(2, 0);
+    leProduit.listeLigneCde.push(b);b="";
+     b = new ligne_c(3, 1);
+    //leProduit.listeLigneCde.push(b);
+    console.log(leProduit.listeLigneCde.length+" : nbre")
+
+//--
+//console.log(localStorage);
+function ajoutPanier(){}
+function ecrireTemplate(){
+  
+  let fragment1 = new DocumentFragment();
+      let template = document.getElementById("templateArticle");
+      const clone = document.importNode(template.content, true);
+         //const lien = clone.querySelector('#addToCart');
+        const image = clone.querySelector('img');
+        const titre = clone.querySelector('h1');
+        const prix  = clone.querySelector('#price');
+        const descript  = clone.querySelector('#description');
+        
+        //test 
+        let select  = clone.querySelector('select');
+        
+        //const select = document.importNode(template.content, true);
+
+        for (let i=0;i<leProduit.colors.length;i++){
+         
+           choix = document.createElement('option');
+           choix.textContent=leProduit.colors[i];
+           choix.value=i;
+         select.appendChild(choix);
+        }
+       //console.log(lien);
+       if (leProduit.listeLigneCde.length!=0){
+        console.log(leProduit.listeLigneCde.length+" n2")
+        //for (let ligne of leProduit.listeLigneCde)
+        for (let i=0;i<leProduit.listeLigneCde.length;i++){
+          let ligne=leProduit.listeLigneCde[i];
+          console.log(ligne);
+
+          //console.log("cde : "+ligne.color + ", " + ligne.qty);
+}
+         
+          //alert(ligne);
+         // console.log(i);//leProduit.listeLigneCde[i].qty);
+        }
+      
+      
+       
+       
+
+          
+           image.src =rustine_img+leProduit.imageUrl;
+          image.src.alt = leProduit.altTxt;
+         titre.textContent=leProduit.name;
+          prix.textContent=leProduit.price;
+          descript.textContent=leProduit.description;
+ 
+
+          fragment1.appendChild(clone);
+
+          return fragment1;
+
+
+}
+
+function ligne_c(qte, color) {
+  this.qty = qte;
+  this.color = color;
+  console.log(this.color + ", " + this.qty);
+}
+
+</script>
+
+</body>
+</html>
+
+
+  
+  

@@ -1,5 +1,5 @@
 const adresse = {
-  nom: "kanapOU",
+  nom: "kanap",
   tel: "01 23 45 67 89",
   mail: "support@name.com",
   ville: "Paris 19",
@@ -11,11 +11,6 @@ const adresse = {
   messageMail: "Vous_avez_besoin_d_un_crédit",
 };
 
-const titi = "Pierre H";
-function titi___() {
-  return adresse;
-}
+export { adresse };
 
-export { adresse, titi };
-
-export default { adresse, titi };
+export default { adresse };
