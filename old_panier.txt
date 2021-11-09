@@ -1,0 +1,113 @@
+function initPanier() {
+  let tt = "";
+  let total = 0;
+  let i = 0;
+
+  for (const leProduit of lePanier) {
+    let tt_lig = "";
+    i++;
+
+    let vm = leProduit.listeLigneCde.length; //lePanier.listeLigneCde.length;
+
+    for (let j = 0; j < vm; j++) {
+      let liste = leProduit.listeLigneCde[j];
+      let qte = liste.qty;
+      let temps = liste.temps;
+      let couleur = leProduit.colors[liste.color];
+      let prix = (qte * leProduit.price) / 100;
+
+      total += prix;
+      tt_lig += editLigne(i, j, qte, prix, couleur, temps);
+    }
+    let lig_raz = vm > 1 ? "supprimer les " + vm + " lignes" : "";
+
+    tt += ` <section id="cart__items">
+    <!-- -->
+    <article class="cart__item" id ="article_${i}" data-id="${leProduit._id}">
+      <div class="cart__item__img">
+        <img
+          src="${leProduit.imageUrl}"
+          alt="${leProduit.altTxt}"
+        />
+      </div>
+      <div class="cart__item__content">
+        <div class="cart__item__content__titlePrice">
+          <h2>${leProduit.name}</h2>
+          <p>${leProduit.price / 100} €(PU.)</p>
+        </div>
+        ${tt_lig}
+        </div>
+      </div>
+    </article>
+  </section>
+    
+    `;
+  }
+  document.getElementById("cart__items").innerHTML = tt;
+  //document.getElementById("totalPrice").innerHTML = total + " €.";
+  console.log("total cde " + total);
+}
+
+function editLigne(i, j, qte, prix, couleur, temps) {
+  //une iigne de Cde..
+  let rustine = "";
+  if (qte < 99) {
+    rustine = `<div class="bton_nbr" onclick="ajout(1,${i},${j})">+</div>`;
+  }
+  let tt = `
+  <div class="cart__item__content__settings"id="ligneCde_${i}_${j}">
+          <div class="cart__item__content__settings__quantity">
+          <p >couleur : ${couleur}</p><br>
+            <p >Qté : 
+            <input
+              type="number"
+              class="itemQuantity"
+              id="itemQuantity_${i}_${j}" 
+              onchange="modif(this.value,${i},${j})"
+              min="1"
+              max="100"
+              value="${qte}"
+            /></p>
+          </div>
+          <p id="prix_${i}_${j}">prix : ${prix} € </p>
+         <div class="bton_nbr" onclick="ajout(-1,${i},${j})">-</div>
+         ${rustine}
+         à ${temps[0]} min. ${temps[1]} sec.
+         <div class="cart__item__content__settings__delete">
+            <p class="deleteItem" onclick="annuler_lig(${i},${j})">Supprimer</p>
+          </div>
+  `;
+
+  // for (let i = 0; i < lignes.length; i++) {
+  // tt += ", qte : " + qte + "color- num " + couleur + "<br";
+  // }
+  //console.log(tt);
+  return tt;
+}
+
+function ajout(sens, i, j) {
+  let bb = parseInt(
+    document.getElementById("itemQuantity_" + i + "_" + j).value
+  );
+  let nQte = sens + bb;
+  // lePanier[i].listeLigneCde[j].qty;
+  console.log(nQte + ", " + i + ", " + j);
+
+  //modif(nQte, i, j);
+}
+/* 
+function modif(nQte, i, j) {
+  //console.log("nbre  " + nQte);
+  if (nQte > 0) {
+    lePanier[i].listeLigneCde[j].qty = nQte;
+    let pu = lePanier[i].price;
+    let nPrix = (nQte * pu) / 100;
+    //somme = somme + (sens * pu) / 100;
+    //console.log("prix_" + i + "_" + j);
+    document.getElementById("prix_" + i + "_" + j).innerHTML = nPrix;
+    document.getElementById("itemQuantity_" + i + "_" + j).value = nQte;
+    document.getElementById("total").innerHTML = somme + "€";
+  } else {
+    annuler_lig(i, j);
+  }
+} */

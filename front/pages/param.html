@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>Kanap</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Plateforme incroyable de e-commerce" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link href="../css/style.css" rel="stylesheet" />
+    <link href="../css/param.css" rel="stylesheet" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    <a
+      href="http://localhost:3000/api/products/415b7cacb65d43b2b5c1ff70f3393ad1"
+      >verifier l'api : un canapé</a
+    ><br />
+    https://www.google.fr/maps/dir// 45 , 46
+    <a href="http://localhost:3000/api/products/"
+      >verifier l'api : les canapés</a
+    ><br />
+    <a href="#" onclick="posterCde()"
+      >verifier id de la commande sur les canapés</a
+    >
+
+    <br />
+
+    <a href="https://www.google.fr/maps/dir// 48.72,2.19"
+      >verifier map-Google pour les canapés</a
+    >
+    <!--  https://www.google.es/maps?q= 48.52,2.19" //a
+    href="https://www.google.fr/maps/dir// 48.52,2.19" -->
+
+    <main id="main">
+      <div id="infoCde">""</div>
+
+      <!--  <p onclick="changer_color()">changer couleur</p>
+      <p onclick="save_Parametres()">changer_Parametres</p> -->
+      <div id="change_color"></div>
+
+      <div id="change_coord"></div>
+    </main>
+
+    <script>
+      let order = "";
+      let contact = {
+        firstName: "Pierre-henry",
+        lastName: "Dupont-Telle2",
+        address: "3 rue des martyrs,Paris",
+        city: "75019",
+        email: "dupont456@gmail.com",
+      };
+      const listProd = [
+        "415b7cacb65d43b2b5c1ff70f3393ad1",
+        "107fb5b75607497b96722bda5b504926",
+      ];
+
+      const request = {
+        contact: contact,
+        products: listProd,
+      };
+      const options = {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      url = "http://localhost:3000/api/products/order";
+      function posterCde() {
+        // window.location = url;
+        // return;
+        fetch(url, options)
+          .then((res) => res.json())
+          .then((res) => {
+            let order = JSON.stringify(res.orderId);
+            console.log(order);
+            document.getElementById("infoCde").innerHTML =
+              "<h3>N° de cde : " + order + "</h3>";
+            // window.location = url;
+          })
+          .catch(function (error) {
+            alert("Impossible d'envoyer la requête");
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,11 +1,14 @@
-import * as myModule from "../module/editHtml.js";
-import * as myModule2 from "../module/parametres.js";
+import * as myHeader from "../module/header.js";
+import * as myFooter from "../module/footer.js";
+
+import * as myParam from "../module/parametres.js";
 import * as myModProduit from "../module/gestion.js";
 
 let panier = JSON.parse(localStorage.getItem("panier")) ?? [];
 
 let txt_dyn_1 = "";
-let inner_1 = document.getElementById("items");
+const page = "index"; //Redondance avec  const laPage = "index";
+//let inner_1 = document.getElementById("items");
 //let jeu = 1; //
 let url = "http://localhost:3000/api/products";
 
@@ -25,16 +28,23 @@ function initIndex() {
       myModProduit.editErreur(error);
     });
 
-  document.getElementById("header").innerHTML = myModule.ecrireHeader(
-    myModule2.adresse
+  console.log("chemin1=(in index)==" + chemin1);
+
+  const chemin = window.location.pathname == "/front/index.html" ? "./" : "../";
+
+  document.getElementById("header").innerHTML = myHeader.ecrireHeader(
+    myParam.adresse,
+    chemin
   );
-  document.getElementById("footer").innerHTML = myModule.ecrireFooter(
-    myModule2.adresse
+  document.getElementById("footer").innerHTML = myFooter.ecrireFooter(
+    myParam.adresse,
+    chemin
   );
 }
 
 function affichage(products) {
-  inner_1.appendChild = myModProduit.afficher(products);
+  const fragment = myModProduit.afficher(products);
+  document.getElementById("items").appendChild(fragment);
 }
 
 //alert(myModule.ecrireFooter(Coord));

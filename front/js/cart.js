@@ -1,191 +1,421 @@
-let tab_prop = [];
-let unClient = "";
-let somme = 0;
-// let gestionPanier;
+//resource https://regex101.com/
+/*
+caractere :/[abc]+/g
+pas de chiffre "/[^1-9]/g;";
+int <100:^[1-9][0-9]?$|^100$
+*/
+import * as myHeader from "../module/header.js";
+import * as myFooter from "../module/footer.js";
+
+import * as myParam from "../module/parametres.js";
+import * as myPanier from "../module/panier.js";
+
+let url1 = "http://localhost:3000/api/products/order";
+let arrayKey = [];
+let unClient = myParam.unClient;
 let lePanier = JSON.parse(localStorage.getItem("panier")) ?? [];
-if (lePanier.length != 0) {
-  initPanier();
-}
+let arrayColorCde = [];
+let arrayColorQty = [];
+let cdeQte = 0;
+let prixTotal = 0;
+let qtyTotale = 0;
+
+const totalQuantity = document.getElementById("totalQuantity");
+const totalPrice = document.getElementById("totalPrice");
+
+//let leProduit = "";
+
+let preRemplir = 1; // a revoir
 
 init_cart();
-function annuler_lig(i, j) {
-  console.log("ligneCde_" + i + "_" + j);
-  lePanier[i].listeLigneCde.splice(j, 1);
 
-  let nNbC = lePanier[i].listeLigneCde.length;
-  let innerH = nNbC == 0 ? "article_" + i : "ligneCde_" + i + "_" + j;
-  console.log(innerH);
-  document.getElementById(innerH).innerHTML = "";
-}
-function ajout(sens, i, j) {
-  bb = parseInt(document.getElementById("itemQuantity_" + i + "_" + j).value);
-  nQte = sens + bb;
-  // lePanier[i].listeLigneCde[j].qty;
-  modif(nQte, i, j);
-}
-function modif(nQte, i, j) {
-  //console.log("nbre  " + nQte);
-  if (nQte > 0) {
-    lePanier[i].listeLigneCde[j].qty = nQte;
-    pu = lePanier[i].price;
-    nPrix = (nQte * pu) / 100;
-    //somme = somme + (sens * pu) / 100;
-    //console.log("prix_" + i + "_" + j);
-    document.getElementById("prix_" + i + "_" + j).innerHTML = nPrix;
-    document.getElementById("itemQuantity_" + i + "_" + j).value = nQte;
-    document.getElementById("total").innerHTML = somme + "€";
-  } else {
-    annuler_lig(i, j);
-  }
-}
-
-function editLigne(i, j, qte, prix, couleur) {
-  //une iigne de Cde..
-  rustine = "";
-  if (qte < 99) {
-    rustine = `<div class="bton_nbr" onclick="ajout(1,${i},${j})">+</div>`;
-  }
-  let tt = `
-  <div class="cart__item__content__settings"id="ligneCde_${i}_${j}">
-          <div class="cart__item__content__settings__quantity">
-          <p >couleur : ${couleur}</p><br>
-            <p >Qté : 
-            <input
-              type="number"
-              class="itemQuantity"
-              id="itemQuantity_${i}_${j}" 
-              onchange="modif(this.value,${i},${j})"
-              min="1"
-              max="100"
-              value="${qte}"
-            /></p>
-          </div>
-          <p id="prix_${i}_${j}">prix : ${prix} € </p>
-         <div class="bton_nbr" onclick="ajout(-1,${i},${j})">-</div>
-         ${rustine}
-         <div class="cart__item__content__settings__delete">
-            <p class="deleteItem" onclick="annuler_lig(${i},${j})">Supprimer</p>
-          </div>
-  `;
-
-  // for (let i = 0; i < lignes.length; i++) {
-  // tt += ", qte : " + qte + "color- num " + couleur + "<br";
-  // }
-  //console.log(tt);
-  return tt;
-}
-
-/* function editLignes(lignes, couleurs) {
-  let = tt = "";
-  i = 0;
-  // for (let i = 0; i < lignes.length; i++) {
-  tt += ", qte : " + lignes[i].qty + "color- num " + lignes[i].color + "<br";
-  // }
-  console.log(lignes.length + tt);
-  return "";
-} */
-function initPanier() {
-  tt = "";
-  let total = 0;
-
-  for (let i = 0; i < lePanier.length; i++) {
-    tt_lig = "";
-    console.log("total cde " + i);
-    vm = lePanier[i].listeLigneCde.length; //lePanier.listeLigneCde.length;
-
-    for (let j = 0; j < vm; j++) {
-      let liste = lePanier[i].listeLigneCde[j];
-      qte = liste.qty;
-      prix = (qte * lePanier[i].price) / 100;
-      couleur = lePanier[i].colors[liste.color];
-      total += prix;
-      tt_lig += editLigne(i, j, qte, prix, couleur);
-    }
-    let lig_raz = vm > 1 ? "supprimer les " + vm + " lignes" : "";
-    /* ou
-    let lig_raz = "";
-    if (vm > 1) {
-      lig_raz = "supprimer les " + vm + " lignes";
-    } */
-
-    //console.log("tit " + lePanier[i].listeLigneCde.length);
-    // console.log("qtt " + liste.qty);
-    //tcd_lig = editLignes(lePanier[i].listeLigneCde, lePanier[i].colors);
-
-    tt += ` <section id="cart__items">
-    <!-- -->
-    <article class="cart__item" id ="article_${i}" data-id="{product-ID}">
-      <div class="cart__item__img">
-        <img
-          src="${lePanier[i].imageUrl}"
-          alt="${lePanier[i].altTxt}"
-        />
-      </div>
-      <div class="cart__item__content">
-        <div class="cart__item__content__titlePrice">
-          <h2>${lePanier[i].name}</h2>
-          <p>${lePanier[i].price / 100} €(PU.)</p>
-        </div>
-        ${tt_lig}
-        </div>
-      </div>
-    </article>
-  </section>
-    
-    `;
-  }
-  document.getElementById("panier").innerHTML = tt;
-  document.getElementById("totalPrice").innerHTML = total + " €.";
-  console.log("total cde " + total);
-}
 function init_cart() {
-  let info_cli = [];
-  url = "http://localhost:3000/api/teddies/order";
-  edit_titre("votre panier");
+  const chemin = window.location.pathname == "/front/index.html" ? "./" : "../";
 
-  info_cli = localStorage.getItem("contact");
-  if (info_cli != "") {
-    unClient = JSON.parse(info_cli);
+  document.getElementById("header").innerHTML = myHeader.ecrireHeader(
+    myParam.adresse,
+    chemin
+  );
+  document.getElementById("footer").innerHTML = myFooter.ecrireFooter(
+    myParam.adresse,
+    chemin
+  );
 
-    for (let key in unClient) {
-      if (unClient.hasOwnProperty(key)) {
-        valeur = unClient[key];
-        tab_prop.push(key);
-        console.log(key, valeur);
-        document.getElementById(key).value = valeur;
-      }
-    }
-    //document.getElementById("order").addEventListener("click", order_panier);
-    //if(){'<input type="checkbox" id="condtions_acept" name="vehicle1" value="accepter nos conditions'/>}
+  let rep = myPanier.ecrireFormulaire(preRemplir, unClient);
+  document.getElementById("formulaire").innerHTML = rep[0];
+  arrayKey = rep[1];
+
+  document
+    .getElementById("testProvisoire")
+    .addEventListener("click", function () {
+      test_order();
+    });
+  const leForm = document.querySelector("form");
+  leForm.addEventListener("submit", function () {
+    test_order();
+  });
+
+  if (lePanier.length != 0) {
+    //initPanier();
+    //TESTTTT
+    const fragment = initPanier2();
+    document.getElementById("cart__items").appendChild(fragment);
   }
 
-  document.getElementById("header").innerHTML = ecrire_header(Coord);
-  document.getElementById("footer").innerHTML = ecrire_footer(Coord);
+  //document.getElementById("order").addEventListener("click", order_panier);
+  //if(){'<input type="checkbox" id="condtions_acept" name="vehicle1" value="accepter nos conditions'/>}
+}
+function initPanier2() {
+  let fragmentSomme = new DocumentFragment();
+  let fragment1 = new DocumentFragment();
+  let template = document.getElementById("templateCde");
+
+  let compteur = -1;
+  let i = -1;
+  for (const leProduit of lePanier) {
+    compteur++;
+    cdeQte = 0;
+
+    i++;
+    let numColor = -1;
+    let j = -1;
+    arrayColorCde = [];
+    arrayColorQty = [];
+
+    /*
+    sequence por retrouver et réapparier les lignes de Cdes par couleur
+    */
+
+    for (const couleur of leProduit.colors) {
+      numColor++;
+      let arrayColor = [];
+      let qtyCo = 0;
+
+      for (const ligneC of leProduit.listeLigneCde) {
+        if (ligneC.color == numColor) {
+          qtyCo += 1 * ligneC.qty;
+          arrayColor.push(ligneC);
+        }
+      }
+
+      cdeQte += 1 * qtyCo;
+      arrayColorQty.push(qtyCo);
+      arrayColorCde.push(arrayColor);
+      qtyTotale += 1 * qtyCo; // (on ajoute poires & pommes)
+      prixTotal += (1 * qtyCo * leProduit.price) / 100;
+      qtyCo = 0; //oups
+    }
+    /**
+     restitution*/
+    leProduit.cdeQte = cdeQte;
+    leProduit.arrayColorQty = arrayColorQty;
+    leProduit.arrayColorCde = arrayColorCde;
+    lePanier[compteur] = leProduit;
+
+    const clone = document.importNode(template.content, true);
+    const arti = clone.querySelector("article");
+    arti.id = "article_" + compteur;
+    const retour = clone.querySelector("#revoirProduit");
+    retour.textContent = "<= " + leProduit.name;
+    retour.href = "./produit.html?id=" + leProduit._id;
+    const nom = clone.querySelector("h2");
+    nom.textContent = leProduit.name;
+    nom.id = leProduit._id;
+
+    const prixArticle = clone.querySelector("#prixArticle");
+    prixArticle.textContent = (
+      (leProduit.cdeQte * leProduit.price) /
+      100
+    ).toFixed(2);
+
+    prixArticle.id = "prix_" + compteur;
+
+    const qteArticle = clone.querySelector("#qteArticle");
+    qteArticle.textContent = leProduit.cdeQte;
+    qteArticle.id = "qte_" + compteur;
+
+    // ou const image = clone.querySelector(".cart__item__img");
+    const image = clone.querySelector("img");
+    image.src = leProduit.imageUrl;
+    image.alt = leProduit.altTxt;
+
+    const prix = clone.querySelector(".cart__item__content__titlePrice p");
+    prix.textContent = leProduit.price / 100 + " €.(PU.)";
+
+    const c = compteur;
+    const suprimer = clone.querySelector(".deleteItem");
+    //suprimer.textContent = "Supprimer tout (qte : " + totalQte + "),";
+    suprimer.addEventListener("click", function () {
+      supprimArticle(c);
+    });
+
+    const lesCouleurs2 = clone.querySelector("lesCouleurs");
+
+    let k = -1;
+    let fragment2 = new DocumentFragment();
+
+    for (const couleur of leProduit.colors) {
+      k++;
+      if (arrayColorCde[k].length != 0) {
+        let template2 = document.getElementById("templateColor");
+
+        const clone2 = document.importNode(template2.content, true);
+        const leId = clone2.querySelector("h3");
+        leId.id = "ligneCouleur_" + compteur + "_" + k;
+        const laCcouleur = clone2.querySelector("#laCouleur");
+        laCcouleur.textContent = couleur;
+
+        const qtColor = clone2.querySelector(".maQuantiteColor");
+        qtColor.textContent = arrayColorQty[k];
+        qtColor.id = "qtColor_" + compteur + "_" + k;
+
+        const prixColor = clone2.querySelector(".monPrixColor");
+        prixColor.textContent = (arrayColorQty[k] * leProduit.price) / 100;
+        prixColor.id = "prixColor_" + compteur + "_" + k;
+
+        const suprim = clone2.querySelector(".suprimerLigColor");
+        suprim.id = "suprim_" + compteur + "_" + k;
+        const x = compteur;
+        const y = k;
+        suprim.addEventListener("click", function () {
+          supprimColor(x, y);
+        });
+
+        fragment2.appendChild(clone2);
+
+        let fragment3 = new DocumentFragment();
+        let num = -1;
+        for (const ligne of arrayColorCde[k]) {
+          num++;
+          // ligne.qty;?? CONNERIE§§§§
+
+          //console.log(ligne.qty);
+          let template3 = document.getElementById("templateLigne");
+          const clone3 = document.importNode(template3.content, true);
+
+          const arti = clone3.querySelector("article");
+          arti.id = "ligCde_" + x + "_" + y + "_" + num;
+
+          const qte = clone3.querySelector(".qteLigneCde");
+          qte.textContent = ligne.qty;
+          qte.id = "qty_" + x + "_" + y + "_" + num;
+
+          const prix = clone3.querySelector(".prixLigne");
+          prix.textContent = (ligne.qty * leProduit.price) / 100;
+          prix.id = "prix_" + x + "_" + y + "_" + num;
+          const z = num;
+
+          prix.addEventListener("click", function () {
+            supprimLiCde(x, y, z);
+          });
+          const idCde = clone3.querySelector("#idLigCde");
+          idCde.textContent = "id : " + ligne._id + " , le " + ligne.temps;
+
+          const supprimer = clone3.querySelector(".supLigne");
+
+          supprimer.addEventListener("click", function () {
+            supprimLigne(x, y, z);
+          });
+          const btM = clone3.querySelector("#btonMoins");
+          btM.addEventListener("click", function () {
+            ajouterUn(-1, x, y, z);
+          });
+          const btP = clone3.querySelector("#btonPlus");
+          btP.addEventListener("click", function () {
+            ajouterUn(1, x, y, z);
+          });
+
+          const leInput = clone3.querySelector(".itemQuantity");
+          leInput.value = ligne.qty;
+          leInput.id = "inQty_" + x + "_" + y + "_" + num;
+          leInput.addEventListener("change", function () {
+            modifCde(this.value, x, y, z);
+          });
+
+          fragment3.appendChild(clone3);
+        }
+        fragment2.appendChild(fragment3);
+      }
+      fragment1.appendChild(fragment2);
+    }
+
+    fragment1.appendChild(clone); //pas de soucis ici
+    fragmentSomme.appendChild(fragment1);
+  }
+
+  modifTotal();
+
+  return fragmentSomme;
 }
 
-let Contact = {
-  firstName: "Pierre-henry",
-  lastName: "Dupont-Telle2",
-  address: "3 rue des martyrs,Paris",
-  city: 75019,
-  email: "dupont456@gmail.com",
-};
+function ajouterUn(sens, x, y, z) {
+  const nQte = sens + 1 * lePanier[x].arrayColorCde[y][z].qty;
+  modifCde(nQte, x, y, z);
+}
+
+function modifCde(nQte, x, y, z) {
+  if (nQte > 0) {
+    //const old1 = lePanier[x].arrayColorCde[y][z];
+
+    const delta = nQte - 1 * lePanier[x].arrayColorCde[y][z].qty;
+    const qte2Nouv = lePanier[x].arrayColorQty[y] + delta;
+    const cdeQte = lePanier[x].cdeQte + delta;
+
+    lePanier[x].arrayColorCde[y][z].qty = nQte;
+    lePanier[x].arrayColorQty[y] = qte2Nouv;
+    lePanier[x].cdeQte = cdeQte;
+    qtyTotale = qtyTotale + delta;
+
+    const prixU = lePanier[x].price / 100;
+    prixTotal += delta * prixU;
+    lePanier[x].arrayColorCde[y][z].nQte;
+
+    //edition
+    modifTotal();
+    modifArticle(x, cdeQte, 1 * cdeQte * prixU);
+    modifColor(x + "_" + y, qte2Nouv, 1 * qte2Nouv * prixU);
+    modifLigne(x + "_" + y + "_" + z, nQte, 1 * nQte * prixU);
+  } else {
+    //Rien qte=0 alors
+  }
+}
+function modifTotal() {
+  totalQuantity.innerHTML = qtyTotale;
+  totalPrice.innerHTML = prixTotal.toFixed(2);
+}
+
+function supprimLigne(a, b, c) {
+  //const refId = x + "_" + y + "_" + z;
+  console.log(a + ", " + b + ", " + c);
+}
+function supprimColor(a, b) {
+  console.log(a + ", " + b);
+  const qtDelete = lePanier[a].arrayColorQty[b];
+
+  qtyTotale -= qtDelete;
+  prixTotal -= (qtDelete * lePanier[a].price) / 100;
+  qtyTotale -= qtDelete;
+  lePanier[a].cdeQte -= qtDelete;
+
+  // actu le prix aussi
+
+  lePanier[a].arrayColorQty[b] = 0;
+  lePanier[a].arrayColorCde[b] = [];
+  let j = -1;
+  for (const lig in lePanier[a].listeLigneCde) {
+    j++;
+    if (lig.color == b) {
+      lePanier[a].listeLigneCde.splice(j, 1);
+      console.log(
+        "art" + lePanier[a].name + ": " + lePanier[a].colors[b] + "delete"
+      );
+    }
+  }
+
+  //lePanier[a].arrayColorCde[b]
+
+  modifTotal();
+  document.getElementById("ligneCouleur_" + a + "_" + b).innerHTML = "";
+}
+function supprimArticle(x) {
+  console.log(x);
+  qtyTotale -= lePanier[x].cdeQte;
+  prixTotal -= (lePanier[x].cdeQte * lePanier[x].price) / 100;
+  lePanier[x].arrayColorCde = "";
+  lePanier[x].arrayColorQty = "";
+  lePanier[x].cdeQte = 0;
+
+  //lePanier[x].listeLigneCde = 0;
+
+  modifTotal();
+
+  document.getElementById("article_" + x).innerHTML = "";
+}
+//fonction d'affichage basique!
+function modifArticle(x, qt, prix) {
+  document.getElementById("qte_" + x).innerHTML = qt;
+  document.getElementById("prix_" + x).innerHTML = prix.toFixed(2);
+}
+function modifColor(x, qt, prix) {
+  //const refId2 = x + "_" + y;
+  document.getElementById("qtColor_" + x).innerHTML = qt;
+  document.getElementById("prixColor_" + x).innerHTML = prix.toFixed(2);
+}
+
+function modifLigne(x, qt, prix) {
+  document.getElementById("inQty_" + x).value = qt;
+  document.getElementById("qty_" + x).innerHTML = qt;
+  document.getElementById("prix_" + x).innerHTML = prix.toFixed(2);
+}
+
+function razForm() {
+  //  patt = /[^1-9]/g;
+  //var result = patt.test(str);
+  // alert(patt.test("Hello world!89"));
+  const vm = arrayKey.length;
+  for (let i = 0; i < vm; i++) {
+    document.getElementById(arrayKey[i]).value = "";
+  }
+}
+//function valder() {}
+function estValide(value) {
+  let regle = /[^1-9]/g;
+  regle = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+  return regle.test(value);
+}
 
 function test_order() {
-  vm = tab_prop.length;
-  for (i = 0; i < vm; i++) {
-    key = tab_prop[i];
-    valeur = document.getElementById(key).value;
-    console.log(valeur);
+  event.preventDefault();
+  //let vm = arrayKey.length;
+  let cptErreur = 0;
+  let unContact = {};
+  // {};
+  //let lesproduitcde=[];
+  for (const key of arrayKey) {
+    // const key = arrayKey[i];
+    const valeur = document.getElementById(key).value;
+    const inner1 = document.getElementById(key + "ErrorMsg");
+
     if (unClient.hasOwnProperty(key)) {
-      unClient[key] = valeur;
+      if (estValide(valeur)) {
+        console.log(valeur + "ok");
+        inner1.innerHTML = "PARFAIT";
+
+        // unClient.key = valeur;
+      } else {
+        cptErreur++;
+        //valeur = valeur + "-faux";
+        inner1.innerHTML = "C'est FAUX";
+      }
+      unContact[key] = valeur;
+      //console.log(key + " "); // + unClient.key);
     }
   }
-  localStorage.setItem("contact", JSON.stringify(unClient));
+  cptErreur = 0; //prov
+
+  // console.log(JSON.stringify(unContact));
+  if (cptErreur == 0) {
+    let products = [];
+    for (const leProduit of lePanier) {
+      products.push(leProduit._id);
+    }
+
+    //console.log(JSON.stringify(products));
+    if (products.length != 0) {
+      const envoiPost = {
+        contact: unContact,
+        products: products,
+      };
+      myPanier.valider(url1, envoiPost);
+      return;
+    }
+  }
 }
+
 //event.stopPropagation();
 /*  console.log("panier");
-  vm = tab_prop.length;
+  vm = arrayKey.length;
   for (i = 0; i < vm; i++) {
     console.log(i);
   }
