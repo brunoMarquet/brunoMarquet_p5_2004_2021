@@ -49,7 +49,7 @@ exports.getOneProduct = (req, res, next) => {
  *
  */
 exports.orderProducts = (req, res, next) => {
-  console.log("orderProducts");
+  // console.log("orderProducts");
   if (
     !req.body.contact ||
     !req.body.contact.firstName ||
@@ -62,9 +62,9 @@ exports.orderProducts = (req, res, next) => {
     return res.status(400).send(new Error("Bad request!"));
   }
   let queries = [];
-  console.log("orderProducts after validation");
+  //console.log("orderProducts after validation");
   for (let productId of req.body.products) {
-    console.log("productId", productId);
+    //console.log("productId", productId);
     const queryPromise = new Promise((resolve, reject) => {
       Product.findById(productId)
         .then((product) => {

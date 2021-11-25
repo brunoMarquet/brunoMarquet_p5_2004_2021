@@ -1,15 +1,25 @@
-import * as myHeader from "../module/header.js";
-import * as myFooter from "../module/footer.js";
+import * as moduleEdit from "../module/edition.mjs";
 
-import * as myParam from "../module/parametres.js";
-import * as myModProduit from "../module/gestion.js";
+import * as moduleProduit from "../module/gestion_0.js";
+
+//import(utilsPath) as moduleProduit;
+
+let typePanier = localStorage.getItem("typePanier") ?? 0;
+//let namePanier;
+let namePanier = "panier_" + typePanier + ".js";
+namePanier = "panier_1.js";
+
+if (typePanier == 0) {
+  //import * as moduleProduit from "../module/gestion_0.js";
+  //namePanier = "panier_0";
+  let panier = JSON.parse(localStorage.getItem(namePanier)) ?? [];
+}
 
 let panier = JSON.parse(localStorage.getItem("panier")) ?? [];
+const chemin = window.location.pathname == "/front/index.html" ? "./" : "../";
 
-let txt_dyn_1 = "";
 const page = "index"; //Redondance avec  const laPage = "index";
-//let inner_1 = document.getElementById("items");
-//let jeu = 1; //
+
 let url = "http://localhost:3000/api/products";
 
 initIndex();
@@ -20,32 +30,33 @@ function initIndex() {
       return data.json();
     })
     .then((products) => {
-      //alert(products.length);
-      affichage(products);
-      // alert(myModProduit.built());
+      const fragment = moduleEdit.ecrireListe(products);
+      document.getElementById("items").appendChild(fragment);
     })
     .catch(function (error) {
-      myModProduit.editErreur(error);
+      moduleProduit.editErreur(error);
     });
 
-  console.log("chemin1=(in index)==" + chemin1);
+  moduleEdit.ecrireHeaderFooter();
 
-  const chemin = window.location.pathname == "/front/index.html" ? "./" : "../";
-
-  document.getElementById("header").innerHTML = myHeader.ecrireHeader(
-    myParam.adresse,
-    chemin
-  );
-  document.getElementById("footer").innerHTML = myFooter.ecrireFooter(
-    myParam.adresse,
-    chemin
-  );
+  document
+    .getElementById("type_commande")
+    .addEventListener("change", function () {
+      console.log(this.value);
+    });
+  document
+    .getElementById("type_panier")
+    .addEventListener("change", function () {
+      modifierTypePanier(this.value);
+    });
 }
-
-function affichage(products) {
-  const fragment = myModProduit.afficher(products);
-  document.getElementById("items").appendChild(fragment);
+function modifierTypePanier(typePanier) {
+  if (typePanier == -1) return;
+  //import * as moduleProduit from "../module/gestion"+ typePanier +"".js";
+  if (typePanier == 0 || typePanier == 1) {
+    console.log(typePanier);
+  } else {
+    //pas d'objet panier
+    console.log("PanierNon");
+  }
 }
-
-//alert(myModule.ecrireFooter(Coord));
-//document.getElementById("header").innerHTML = ecrireHeader(Coord);

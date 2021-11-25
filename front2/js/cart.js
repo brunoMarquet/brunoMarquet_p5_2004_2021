@@ -1,9 +1,10 @@
 import * as moduleEdit from "../module/edition.mjs";
+import * as myParam from "../module/parametres.js";
 import * as myPanier from "../module/panier.js";
 
 let url1 = "http://localhost:3000/api/products/order";
 let arrayKey = [];
-//let unClient = myParam.unClient;
+let unClient = myParam.unClient;
 let lePanier = JSON.parse(localStorage.getItem("panier")) ?? [];
 let ligCommande = [];
 let qtyByColor = [];
@@ -22,7 +23,7 @@ init_cart();
 
 function init_cart() {
   moduleEdit.ecrireHeaderFooter();
-  let rep = moduleEdit.ecrireFormulaire(preRemplir);
+  let rep = moduleEdit.ecrireFormulaire(preRemplir, unClient);
   document.getElementById("formulaire").innerHTML = rep[0];
   arrayKey = rep[1];
 
@@ -272,3 +273,59 @@ function estValide(value) {
 
   return regle.test(value);
 }
+
+function test_order() {
+  //Event.preventDefault();
+  //let vm = arrayKey.length;
+  let cptErreur = 0;
+  let unContact = {};
+  // {};
+  //let lesproduitcde=[];
+  for (const key of arrayKey) {
+    // const key = arrayKey[i];
+    const valeur = document.getElementById(key).value;
+    const inner1 = document.getElementById(key + "ErrorMsg");
+
+    if (unClient.hasOwnProperty(key)) {
+      if (estValide(valeur)) {
+        console.log(valeur + "ok");
+        inner1.innerHTML = "PARFAIT";
+
+        // unClient.key = valeur;
+      } else {
+        cptErreur++;
+        //valeur = valeur + "-faux";
+        inner1.innerHTML = "C'est FAUX";
+      }
+      unContact[key] = valeur;
+      //console.log(key + " "); // + unClient.key);
+    }
+  }
+  cptErreur = 0; //prov
+
+  // console.log(JSON.stringify(unContact));
+  if (cptErreur == 0) {
+    let products = [];
+    for (const leProduit of lePanier) {
+      products.push(leProduit._id);
+    }
+
+    //console.log(JSON.stringify(products));
+    if (products.length != 0) {
+      const envoiPost = {
+        contact: unContact,
+        products: products,
+      };
+      myPanier.valider(url1, envoiPost);
+      return;
+    }
+  }
+}
+
+//event.stopPropagation();
+/*  console.log("panier");
+  vm = arrayKey.length;
+  for (i = 0; i < vm; i++) {
+    console.log(i);
+  }
+} */

@@ -1,15 +1,6 @@
-import * as moduleEdit from "../module/edition.js";
-import * as myParam from "../module/parametres.js";
+import * as moduleEdit from "../module/edition.mjs";
 
-const chemin = window.location.pathname == "/front/index.html" ? "./" : "../";
-document.getElementById("header").innerHTML = moduleEdit.ecrireHeader(
-  myParam.adresse,
-  chemin
-);
-document.getElementById("footer").innerHTML = moduleEdit.ecrireFooter(
-  myParam.adresse,
-  chemin
-);
+moduleEdit.ecrireHeaderFooter();
 
 try {
   const Numcde = localStorage.getItem("orderId");

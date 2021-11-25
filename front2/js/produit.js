@@ -1,27 +1,14 @@
 import * as moduleEdit from "../module/edition.mjs";
+//import * as myMetier from "../module/gestion.js";
 
-moduleEdit.ecrireHeaderFooter();
-let moduleProduit;
-let lePanier;
-let typePanier = localStorage.getItem("typePanier") ?? 0;
-document.getElementById("mydebug").innerHTML = "typePanier: " + typePanier;
-document.getElementById("mydebug").style.color = "blue";
-
-let namePanier;
-if (typePanier == 0) {
-  // alert("truc");
-  namePanier = "panier_0";
-  lePanier = JSON.parse(localStorage.getItem(namePanier)) ?? [];
-  const path = "../module/panier_1.js";
-  moduleProduit = await import(path);
-}
-
-moduleProduit.titi();
 initLeProduit();
 let leProduit = "";
-const page = "produit";
+//const page = "produit";
 let estDansPanier = false;
 let indicePanier = -1;
+//let lesCdes = [];
+//leProduit.listeLigneCde = [{}];
+let lePanier = JSON.parse(localStorage.getItem("panier")) ?? [];
 
 function initLeProduit() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -39,45 +26,35 @@ function initLeProduit() {
       console.log(error);
       //  edit_erreur(error);
     });
-}
 
+  moduleEdit.ecrireHeaderFooter();
+}
 function afficheProd(unProduit) {
   leProduit = unProduit;
+  leProduit.listeLigneCde = [];
   document.title = leProduit.name;
+
   const fragment = moduleEdit.ecrireTemplate(leProduit);
-
   document.getElementById("theItem").appendChild(fragment);
-
-  document.getElementById("addToCart").addEventListener("click", ajoutPanier);
-  document.getElementById("myCheck").addEventListener("change", function () {
-    // moduleProduit.afficheLigne(unProduit);
-    alert("toto");
-  });
-
-  // return;
 
   if (lePanier.length != 0) {
     for (let j = 0; j < lePanier.length; j++) {
       if (lePanier[j]._id == leProduit._id) {
-        // veifier ou non la lig cde
-        estDansPanier = true;
+        estDansPanier = true; // redondant ???
         indicePanier = j;
         leProduit.listeLigneCde = lePanier[j].listeLigneCde;
-        //
         console.log(
-          "ref.trouvée " +
-            indicePanier +
-            "nbre cde:" +
-            lePanier[j].listeLigneCde.length
+          "ref " + indicePanier + "nbre cde:" + lePanier[j].listeLigneCde.length
         );
-
-        moduleProduit.afficheLigne(unProduit);
+        moduleEdit.afficheLignes(unProduit);
       }
     }
   }
   if (estDansPanier == false) {
-    leProduit.listeLigneCde = [];
+    // leProduit.listeLigneCde = [];
   }
+
+  document.getElementById("addToCart").addEventListener("click", ajoutPanier);
 }
 
 function ajoutPanier() {
@@ -88,7 +65,7 @@ function ajoutPanier() {
   const couleur = document.getElementById("colors").value;
   if (Number.isInteger(qte) && qte > 0) {
     vtt += "Merci de choisir une quantité svp !<br>";
-    v_err++;
+    //v_err++;
   }
   if (couleur == -1) {
     vtt += "Merci de choisir la couleur svp !";
@@ -96,7 +73,7 @@ function ajoutPanier() {
   }
 
   if (v_err == 0) {
-    //estDansPanier = commander(qte, couleur);
+    // estDansPanier = commander(qte, couleur);
     commander(qte, couleur);
   } else {
     //erreur
@@ -107,26 +84,48 @@ function ajoutPanier() {
   }
 }
 function commander(qte, couleur) {
-  const unId = leProduit.listeLigneCde.length + 1000;
-
-  let b = new ligne_c(leProduit._id, qte, couleur);
-  leProduit.listeLigneCde.push(b);
+  //let b = new ligne_c(qte, couleur);
+  //leProduit.listeLigneCde.push(b);
   if (estDansPanier == false) {
+    let b = new ligne_c(qte, couleur);
+    leProduit.listeLigneCde.push(b);
     lePanier.push(leProduit);
     estDansPanier = true;
+    indicePanier++; // pas certain!!!
   } else {
     if (indicePanier != -1) {
+      let newCommande = false;
+      let indice = -1;
+      for (ligne of leProduit.listeLigneCde) {
+        indice++;
+        if (couleur == ligne.color) {
+          newCommande = true;
+          ligne.qy += 1 * qte;
+          if (ligne.qy > 0) {
+            leProduit.listeLigneCde[indice] = ligne;
+          } else {
+            leProduit.listeLigneCde.splice(indice, 1);
+            //efacer
+          }
+        }
+      }
+
+      if (newCommande == false) {
+        let b = new ligne_c(qte, couleur);
+        leProduit.listeLigneCde.push(b);
+      }
+
       lePanier[indicePanier].listeLigneCde = leProduit.listeLigneCde;
     } else {
       console.log("ERREUR " + leProduit.listeLigneCde.length);
     }
   }
   localStorage.setItem("panier", JSON.stringify(lePanier));
-  myMetier.afficheLignes(leProduit);
+  moduleEdit.afficheLignes(leProduit);
 }
-function ligne_c(id, qte, color) {
-  (this._id = id), (this.qty = qte);
+function ligne_c(qte, color) {
+  // this._id = id;
+  this.qty = qte;
   this.color = color;
-
-  console.log("ref: " + this._id + "," + this.color + ", " + this.qty);
+  console.log(this.color + ", " + this.qty);
 }

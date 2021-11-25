@@ -33,11 +33,11 @@ function lesCanapes() {
 
   this.editer = function () {
     3;
-    const leMax = this.listeProduit.length;
+    const indexProduit = this.listeProduit.length;
     let fragmentSom = new DocumentFragment();
     let fragment1 = new DocumentFragment();
     let template = document.getElementById("produitTemplate");
-    for (let i = 0; i < leMax; i++) {
+    for (let i = 0; i < indexProduit; i++) {
       const clone = document.importNode(template.content, true);
       const lien = clone.querySelector("a");
       const nom = clone.querySelector("h3");

@@ -28,7 +28,7 @@
           <section class="cart">
             <section id="cart__items">
               <!-- -->
-              <article class="cart__item" data-id="{product-ID}">
+              <!--  <article class="cart__item" data-id="{product-ID}">
                 <div class="cart__item__img">
                   <img
                     src="../images/logo.png"
@@ -57,10 +57,7 @@
                     </div>
                   </div>
                 </div>
-              </article>
-              -->
-              <input type="checkbox" id="j_accepte" name="j_accepte" />accepter
-              nos conditions
+              </article> -->
             </section>
             <div class="cart__price">
               <p>
@@ -72,14 +69,19 @@
               <form method="get" class="cart__order__form">
                 <div id="formulaire"></div>
                 <input type="reset" value="raz" />
+                <input
+                  type="checkbox"
+                  id="j_accepte"
+                  name="j_accepte"
+                />accepter nos conditions
                 <input onclick="razForm()" value=" fonction 'raz'" />
                 <br />
                 <br />
                 <br />
-                <div class="test_order" onclick="test_order()">
-                  <br />
-                  <br />
-                  <br />
+                <br />
+                <br />
+                <br />
+                <div class="test_order" id="testProvisoire">
                   debug provisoire
                 </div>
                 <div class="cart__order__form__submit">
@@ -94,10 +96,64 @@
 
     <footer id="footer"></footer>
 
-    <!-- <script src="../js/main.js"></script> -->
-   
+    <template id="templateCde">
+      <article class="cart__item">
+        <a id="revoirProduit"><=</a>
+        <div class="cart__item__img">
+          <img src="../images/logo.png" alt="Photographie d'un canapé" />
+        </div>
+        <div class="cart__item__content">
+          <div class="cart__item__content__titlePrice">
+            <h2>Nom du produit</h2>
+            <p>42,00 €</p>
+          </div>
+          <div class="cart__item__content__settings__delete">
+            <p class="deleteItem">Supprimer tout</p>
+          </div>
+          <p>
+            Prix total : <span id="prixArticle"></span><span> €. ,Qte : </span
+            ><span id="qteArticle">50</span>
+          </p>
+          <div id="lesCouleurs">test</div>
+          <div class="cart__item__content__settings"></div>
+        </div>
+      </article>
+    </template>
 
-    <scriptsrc="cart4.js"></script>
-	 <scriptsrc="cart4Data.js"></script>
+    <template id="templateColor">
+      <h3>
+        Cdes de couleur : <span id="laCouleur">Noir</span> Qté :
+        <span class="maQuantiteColor">101</span>
+        prix sous total : <span class="monPrixColor">10</span> €.(ttc?)
+        <span class="suprimerLigColor"> Supprimer2</span>
+      </h3>
+    </template>
+
+    <template id="templateLigne">
+      <article>
+        <h4>
+          <span id="">=></span> Qté : <span class="qteLigneCde"> 4 </span> ,
+          prix : <span class="prixLigne">10</span> €.
+          <span id="idLigCde"> { id= 53min. 15s.} </span>
+
+          <span class="bton_nbr" id="btonMoins">-</span>
+          <input
+            type="number"
+            class="itemQuantity"
+            name="itemQuantity"
+            min="1"
+            max="100"
+            value="42"
+          />
+          <div class="bton_nbr" id="btonPlus">+</div>
+          <span class="supLigne"> Supprimer la ligne </span>
+        </h4>
+      </article>
+    </template>
+
+    <!-- <script src="../js/main.js"></script> -->
+    <script src="../js/commun.js"></script>
+
+    <script type="module" src="../js/cart.js"></script>
   </body>
 </html>
