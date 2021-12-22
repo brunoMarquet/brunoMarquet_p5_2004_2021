@@ -77,7 +77,8 @@ function estValide(value, key) {
   //console.log(key + " ttty" + value);
   let regle = /^[a-zA-Z]{1}[A-Za-z'àáâãäåçèéêëìíîïðòóôõöùúûüýÿ -._\s-]*$/;
   if (key == "address") {
-    regle = /([A-Z'àáâãäåçèéêëìíîïðòóôõöùúûüýÿ -._\s-])\w+/g;
+    regle = /^[0-9]{1}[A-Za-z-0-9'àáâãäåçèéêëìíîïðòóôõöùúûüýÿ -._\s-]*$/;
+    //([A-Z'àáâãäåçèéêëìíîïðòóôõöùúûüýÿ -._\s-])\w+/g;
   }
   if (key == "city") {
     regle = /^\d{5}$/;

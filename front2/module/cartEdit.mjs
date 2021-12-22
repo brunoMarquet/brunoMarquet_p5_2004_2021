@@ -1,5 +1,8 @@
+import * as moduleCart from "../module/panier.js";
 let lesPrix = {};
-let total = [];
+//let total = [];
+let qteTotal = 0;
+let prixTotal = 0;
 const innerLigne = document.getElementById("templateLigne");
 const innertotal = [];
 innertotal[0] = document.getElementById("totalQuantity");
@@ -10,14 +13,13 @@ function ecrirePanier(listeProduit, lePanier) {
   let fragmentArticle = new DocumentFragment();
 
   for (const [unId, ligne] of Object.entries(lePanier)) {
-    //console.log(`${unId}`);
-
     const unProduct = getProdPanier(unId, listeProduit);
     const fragmentArticle = templateArticle(unProduct, ligne);
 
     fragmentSomme.appendChild(fragmentArticle);
   }
-  writeTotal();
+  modifTotal(qteTotal, formaterPrix(1, prixTotal));
+
   return fragmentSomme;
 }
 function getProdPanier(unId, lesProduits) {
@@ -49,7 +51,7 @@ function templateArticle(leProduit, lignes) {
 
   const suprimer = clone.querySelector(".deleteItem");
   suprimer.addEventListener("click", function () {
-    deleteArticle(leProduit._id);
+    moduleCart.deleteArticle(leProduit._id);
   });
   let QteModele = 0;
   for (const [key, value] of Object.entries(lignes)) {
@@ -64,8 +66,9 @@ function templateArticle(leProduit, lignes) {
   prixArticle.value = leProduit.price;
 
   lesPrix[leProduit._id] = formaterPrix(leProduit.price, 1);
-  total[0] += 1 * QteModele;
-  total[1] += leProduit.price * QteModele;
+  //debugger;
+  qteTotal += 1 * QteModele;
+  prixTotal += leProduit.price * QteModele;
 
   const lesLignes = clone.querySelector("#lesCouleurs");
   const fragLignes = ecrireLesLignes(leProduit, lignes);
@@ -105,15 +108,15 @@ function ecrireUneLigne(unId, pu, indicecolor, color, qty) {
 
   const supprimer = cloneLigne.querySelector(".supLigne");
   supprimer.addEventListener("click", function () {
-    modifQty(unId, indicecolor, 0);
+    moduleCart.modifQty(unId, indicecolor, 0);
   });
   const btM = cloneLigne.querySelector("#btonMoins");
   btM.addEventListener("click", function () {
-    ajouterUn(unId, indicecolor, -1);
+    moduleCart.ajouterUn(unId, indicecolor, -1);
   });
   const btP = cloneLigne.querySelector("#btonPlus");
   btP.addEventListener("click", function () {
-    ajouterUn(unId, indicecolor, 1);
+    moduleCart.ajouterUn(unId, indicecolor, 1);
   });
   const leInput = cloneLigne.querySelector(".itemQuantity");
   leInput.value = qty;
@@ -121,7 +124,7 @@ function ecrireUneLigne(unId, pu, indicecolor, color, qty) {
   leInput.id = `inQty_${unId}_${indicecolor}`;
   // console.log(`${color} qtés : ${qty}`);
   leInput.addEventListener("change", function () {
-    checkModifQty(unId, indicecolor, this.value);
+    moduleCart.checkModifQty(unId, indicecolor, this.value);
   });
   const leprix2 = cloneLigne.querySelector(".monPrixColor");
   leprix2.textContent = formaterPrix(pu, qty);
@@ -130,48 +133,14 @@ function ecrireUneLigne(unId, pu, indicecolor, color, qty) {
   fragment1.appendChild(cloneLigne);
   return fragment1;
 }
-function writeTotal() {
-  //qte, prix
-  innertotal[0].innerHTML = total[0];
-  innertotal[1].innerHTML = formaterPrix(1, total[1]);
-}
-/**déclenchée apres modif du panier*/
-function actuEcran(id, idColor, newQty) {
-  let qteP = 0;
-  let prixP = 0;
-  for (const [unId, lignes] of Object.entries(lePanier)) {
-    const pu = lesPrix[unId];
-    let qtArticle = 0;
-
-    for (const [color, qte] of Object.entries(lignes)) {
-      qtArticle += qte;
-    }
-    const prixArticle = qtArticle * pu;
-    const prixLigne = newQty * pu;
-
-    if (id == unId) {
-      if (newQty > 0) {
-        modifArticle(unId, qtArticle, prixArticle);
-        modifLigne(unId, idColor, newQty, prixLigne);
-      }
-      if (newQty == 0 && qtArticle != 0) {
-        modifArticle(unId, qtArticle, prixArticle);
-        razLigne(unId, idColor);
-      }
-    }
-    qteP += qtArticle;
-    prixP += prixArticle;
-  }
-  /**id nest plus present dans le panier donc... */
-  if (idColor == -1) {
-    razArticle(id);
-  }
-  total = [qteP, 100 * prixP.toFixed(2)];
-  // writeTotal();
+function modifTotal(qte, total) {
+  //debugger;
+  innertotal[0].innerHTML = qte;
+  innertotal[1].innerHTML = total;
 }
 
 /**fonctions innerHTML appellées par la fonction :actuEcran
-  ci dessus
+depuis le module panier
  * -pour modif le html
  */
 function razLigne(unId, color) {
@@ -192,4 +161,12 @@ function modifLigne(id, idColor, newQty, prixLigne) {
     prixLigne.toFixed(2);
 }
 
-export { ecrirePanier };
+export {
+  lesPrix,
+  ecrirePanier,
+  razLigne,
+  razArticle,
+  modifArticle,
+  modifLigne,
+  modifTotal,
+};

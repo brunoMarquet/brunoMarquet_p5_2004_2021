@@ -5,7 +5,7 @@ const unClient = {
     pholder: "mettre son prénom SVP.. ",
     regle:
       "Votre prénom ne peut pas contenir de chiffres ou de sigle tel que (, ° +} etc ...",
-    exemple: "Jean - Michel",
+    exemple: "Jean - Michel 148",
   },
   lastName: {
     type: "string",
@@ -17,10 +17,10 @@ const unClient = {
   },
   address: {
     type: "string",
-    entete: " Votre adresse",
+    entete: " Votre adresse qui doit commencer par un chiffre",
     pholder: "Merci de renseigner votre adresse.. ",
-    regle: "Votre adresse à definir",
-    exemple: "148 rue des Martyrs",
+    regle: "Votre adresse ... doit commencer par un chiffre",
+    exemple: "A148 rue des Martyrs",
   },
   city: {
     type: "integer",

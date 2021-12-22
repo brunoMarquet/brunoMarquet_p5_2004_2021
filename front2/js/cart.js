@@ -4,7 +4,7 @@ import * as moduleEdit from "../module/cartEdit.mjs";
 import * as moduleCart from "../module/panier.js";
 import * as moduleForm from "../module/cartForm.mjs";
 
-let url1 = "http://localhost:3000/api/products/order";
+//let url1 = "http://localhost:3000/api/products/order";
 
 //let objRegex = [];
 //let unClient = myParam.unClient;
@@ -27,6 +27,9 @@ function initCart() {
         //const fragment = moduleCart.
         const fragment = moduleEdit.ecrirePanier(products, moduleCart.lePanier);
         document.getElementById("cart__items").appendChild(fragment);
+
+        moduleCart.actuPrix(moduleEdit.lesPrix);
+        //moduleEdit.lesPrix = {}; //pour etre clair!
       })
 
       .catch(function (error) {

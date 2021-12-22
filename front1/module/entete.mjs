@@ -1,4 +1,5 @@
 //import * as myParam from "../module/parametres.js";
+const leFolder = "front1";
 const adresse = {
   nom: "kanap",
   tel: "01 23 45 67 89",
@@ -20,7 +21,7 @@ function ecrireHeaderFooter() {
   let cheminIndex = "../";
   // window.location.pathname == "/front2/index.html" ? "./" : "../";
   const lUrl = window.location.pathname;
-  if (lUrl == "/front2/" || lUrl == "/front2/index.html") {
+  if (lUrl == "/" + leFolder + "/" || lUrl == "/" + leFolder + "/index.html") {
     cheminIndex = "./";
     chemin2 = "./pages/";
   }
