@@ -48,7 +48,7 @@ seulemenent ensuite on regarde ce qui est déjà commandé */
   document.getElementById("theItem").appendChild(fragment);
   if (moduleCart.lePanier[theId]) {
     //recherche commandes
-    //console.log(moduleCart.lePanier[product._id]);
+
     moduleEdit.editLignesCde(moduleCart.lePanier[theId]);
   }
 

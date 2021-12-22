@@ -15,6 +15,7 @@ initCart();
 
 function initCart() {
   moduleEntete.ecrireHeaderFooter();
+  moduleCart.initModule();
 
   if (moduleCart.lePanier.length != 0) {
     const url = "http://localhost:3000/api/products";
@@ -24,8 +25,7 @@ function initCart() {
         return data.json();
       })
       .then((products) => {
-        //const fragment = moduleCart.
-        const fragment = moduleEdit.ecrirePanier(products, moduleCart.lePanier);
+        const fragment = moduleCart.ecrirePanier(products);
         document.getElementById("cart__items").appendChild(fragment);
       })
 
@@ -37,6 +37,10 @@ function initCart() {
 
   let rep = moduleForm.ecrireFormulaire(preRemplir, myParam.unClient);
   document.getElementById("formulaire").innerHTML = rep;
+  //objRegex = rep[1];
+  /*  for (const [key, regle] of Object.entries(objRegex)) {
+    console.log(key + ":" + regle);
+  } */
 
   document.getElementById("order").addEventListener("click", function () {
     moduleForm.testOrder(moduleCart.lePanier);
@@ -46,7 +50,6 @@ function initCart() {
     modifLeFormulaire();
   });
 }
-
 function modifLeFormulaire() {
   preRemplir = document.getElementById("remplir").checked ? 1 : 0;
   let rep = moduleForm.ecrireFormulaire(preRemplir, myParam.unClient);
