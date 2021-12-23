@@ -1,81 +1,27 @@
-import * as myParam from "../module/parametres.js";
-
+import * as moduleControl from "../module/cartControl.mjs";
 let lesPrix = {};
-
-/*********  ecrireFormulaire ***************
- */
-
-function ecrireFormulaire(preRemplir) {
-  let text = "";
-
-  let objRegex = {};
-  //??
-  const unClient = myParam.unClient;
-
-  for (let key in unClient) {
-    if (unClient.hasOwnProperty(key)) {
-      let valeur = unClient[key];
-      // console.log("mon t " + key);
-
-      objRegex[key] = valeur.regle;
-      let lexemple = preRemplir == 1 ? "value='" + valeur.exemple + "'" : "";
-      text += `<div class="cart__order__form__question">
-        <label for="${key}">${valeur.entete}: </label>
-       <input type="${valeur.type}" id="${key}" name="${key}" placeholder="${valeur.pholder}" ${lexemple} >
-        <p id="${key}ErrorMsg"></p> `;
-    }
-  }
-  return [text, objRegex];
-}
-/*********  ecrireFormulaire ***************
- */
+//let total = [];
+let qteTotal = 0;
+let prixTotal = 0;
+const innerLigne = document.getElementById("templateLigne");
+const innertotal = [];
+innertotal[0] = document.getElementById("totalQuantity");
+innertotal[1] = document.getElementById("totalPrice");
 
 function ecrirePanier(listeProduit, lePanier) {
   let fragmentSomme = new DocumentFragment();
   let fragmentArticle = new DocumentFragment();
 
   for (const [unId, ligne] of Object.entries(lePanier)) {
-    console.log(`${unId}`);
-
     const unProduct = getProdPanier(unId, listeProduit);
-
-    const fragmentArticle = moduleEdit.templateArticle(
-      unProduct,
-      ligne,
-      lesPrix
-    );
+    const fragmentArticle = templateArticle(unProduct, ligne);
 
     fragmentSomme.appendChild(fragmentArticle);
   }
+  modifTotal(qteTotal, formaterPrix(1, prixTotal));
 
-  writeTotal();
   return fragmentSomme;
 }
-
-function ecrirePanier____(lePanier, listeProduit) {
-  let fragmentSomme = new DocumentFragment();
-  let fragmentArticle = new DocumentFragment();
-  let compteur = -1;
-  for (const [unId, ligne] of Object.entries(lePanier)) {
-    console.log(`${unId}`);
-    compteur++;
-    const unProduct = getProdPanier(unId, listeProduit);
-    const fragmentArticle = templateArticle(unProduct, ligne, compteur);
-
-    for (const [color, qty] of Object.entries(ligne)) {
-      console.log(`${color} qte : ${qty}`);
-    }
-    fragmentSomme.appendChild(fragmentArticle);
-  }
-  return fragmentSomme;
-
-  /*  for (const [color, qty] of Object.entries(ligne)) {
-      console.log(`${color} qte :${qty}`);
-    }
-  } */
-  return;
-}
-
 function getProdPanier(unId, lesProduits) {
   for (let j = 0; j < lesProduits.length; j++) {
     if (lesProduits[j]._id == unId) {
@@ -84,8 +30,7 @@ function getProdPanier(unId, lesProduits) {
   }
   return {};
 }
-
-function templateArticle(leProduit, lignes, lesPrix) {
+function templateArticle(leProduit, lignes) {
   let fragmentArticle = new DocumentFragment();
   let template = document.getElementById("templateCde");
   const clone = document.importNode(template.content, true);
@@ -106,9 +51,8 @@ function templateArticle(leProduit, lignes, lesPrix) {
 
   const suprimer = clone.querySelector(".deleteItem");
   suprimer.addEventListener("click", function () {
-    deleteArticle(leProduit._id);
+    moduleControl.deleteArticle(leProduit._id);
   });
-
   let QteModele = 0;
   for (const [key, value] of Object.entries(lignes)) {
     QteModele += value;
@@ -122,20 +66,20 @@ function templateArticle(leProduit, lignes, lesPrix) {
   prixArticle.value = leProduit.price;
 
   lesPrix[leProduit._id] = formaterPrix(leProduit.price, 1);
-  total[0] += 1 * QteModele;
-  total[1] += leProduit.price * QteModele;
+  //debugger;
+  qteTotal += 1 * QteModele;
+  prixTotal += leProduit.price * QteModele;
 
   const lesLignes = clone.querySelector("#lesCouleurs");
   const fragLignes = ecrireLesLignes(leProduit, lignes);
-
   lesLignes.appendChild(fragLignes);
 
   fragmentArticle.appendChild(clone);
   return fragmentArticle;
 }
+
 function ecrireLesLignes(leProduit, lignes) {
   let fragmentSom = new DocumentFragment();
-  //let qte = 0;
   for (const [color, qty] of Object.entries(lignes)) {
     fragmentSom.appendChild(
       ecrireUneLigne(
@@ -164,15 +108,15 @@ function ecrireUneLigne(unId, pu, indicecolor, color, qty) {
 
   const supprimer = cloneLigne.querySelector(".supLigne");
   supprimer.addEventListener("click", function () {
-    modifQty(unId, indicecolor, 0);
+    moduleControl.deleteLigne(unId, indicecolor, 0);
   });
   const btM = cloneLigne.querySelector("#btonMoins");
   btM.addEventListener("click", function () {
-    ajouterUn(unId, indicecolor, -1);
+    moduleControl.ajouterUn(unId, indicecolor, -1);
   });
   const btP = cloneLigne.querySelector("#btonPlus");
   btP.addEventListener("click", function () {
-    ajouterUn(unId, indicecolor, 1);
+    moduleControl.ajouterUn(unId, indicecolor, 1);
   });
   const leInput = cloneLigne.querySelector(".itemQuantity");
   leInput.value = qty;
@@ -180,7 +124,7 @@ function ecrireUneLigne(unId, pu, indicecolor, color, qty) {
   leInput.id = `inQty_${unId}_${indicecolor}`;
   // console.log(`${color} qtés : ${qty}`);
   leInput.addEventListener("change", function () {
-    checkModifQty(unId, indicecolor, this.value);
+    moduleControl.checkModifQty(unId, indicecolor, this.value);
   });
   const leprix2 = cloneLigne.querySelector(".monPrixColor");
   leprix2.textContent = formaterPrix(pu, qty);
@@ -189,6 +133,40 @@ function ecrireUneLigne(unId, pu, indicecolor, color, qty) {
   fragment1.appendChild(cloneLigne);
   return fragment1;
 }
+function modifTotal(qte, total) {
+  //debugger;
+  innertotal[0].innerHTML = qte;
+  innertotal[1].innerHTML = total;
+}
 
-// Export a Module
-export { ecrirePanier, ecrireFormulaire, templateArticle };
+/**fonctions innerHTML appellées par la fonction :actuEcran
+depuis le module Controleur !
+ * -pour modif le html
+ */
+function razLigne(unId, color) {
+  document.getElementById(`ligne_${unId}_${color}`).innerHTML = "";
+}
+function razArticle(id) {
+  document.getElementById("article_" + id).innerHTML = "";
+}
+
+function modifArticle(id, qtArticle, prixArticle) {
+  document.getElementById("qte_" + id).innerHTML = qtArticle;
+  document.getElementById("prix_" + id).innerHTML = prixArticle.toFixed(2);
+}
+function modifLigne(id, idColor, newQty, prixLigne) {
+  document.getElementById("inQte_" + id + "_" + idColor).innerHTML = newQty;
+  document.getElementById("inQty_" + id + "_" + idColor).value = newQty;
+  document.getElementById("lignePrix_" + id + "_" + idColor).innerHTML =
+    prixLigne.toFixed(2);
+}
+
+export {
+  lesPrix,
+  ecrirePanier,
+  razLigne,
+  razArticle,
+  modifArticle,
+  modifLigne,
+  modifTotal,
+};
