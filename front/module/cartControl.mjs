@@ -82,6 +82,7 @@ function checkModifQty(unId, indicecolor, qte) {
   }
 }
 
+// ajout commentaire
 function ajouterUn(unId, color, sens) {
   const newQte = parseInt(moduleCart.lePanier[unId][color] + sens);
   if (newQte < 100) {
