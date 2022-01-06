@@ -20,7 +20,7 @@
 
  */
 import * as moduleEntete from "../module/entete.mjs";
-import * as moduleEdit from "../module/indexEdit.js";
+import * as moduleEdit from "../module/indexEdit.mjs";
 //localStorage.clear;
 let panier = JSON.parse(localStorage.getItem("panier")) ?? [];
 

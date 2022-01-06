@@ -1,7 +1,9 @@
-//import * as myParam from "../module/parametres.js";
-
 const url1 = "http://localhost:3000/api/products/order";
-let objRegex = {};
+
+let objetVerif = {};
+/* cet objet est une suite de array de style:
+[un regex=/^\d{5}$/ et un UnMessage="vous devez mettre votre codepostal" ]
+objetVerif[key] = [valeur.leRegex, valeur.UnMessage];*/
 
 /*********  ecrireFormulaire ***************
  */
@@ -12,7 +14,7 @@ function ecrireFormulaire(preRemplir, unClient) {
   for (let key in unClient) {
     if (unClient.hasOwnProperty(key)) {
       let valeur = unClient[key];
-      objRegex[key] = valeur.regle;
+      objetVerif[key] = [valeur.leRegex, valeur.UnMessage];
       let lexemple = preRemplir == 1 ? "value='" + valeur.exemple + "'" : "";
       text += `<div class="cart__order__form__question">
         <label for="${key}">${valeur.entete}: </label>
@@ -49,19 +51,20 @@ function testOrder(lePanier) {
 function verifForm() {
   let cptErreur = 0;
   let unContact = {};
-  for (const [key, regle] of Object.entries(objRegex)) {
+  for (const [key, arrayVerif] of Object.entries(objetVerif)) {
+    const regle = arrayVerif[0];
     const inner0 = document.getElementById(key);
     const valeur = inner0.value;
 
     const inner1 = document.getElementById(key + "ErrorMsg");
 
-    if (estValide(valeur, key)) {
+    if (estValide(valeur, regle)) {
       // console.log(valeur + "PARFAIT ok");
       inner1.innerHTML = "";
       inner0.style.backgroundColor = "green";
     } else {
       cptErreur++;
-      inner1.innerHTML = regle;
+      inner1.innerHTML = arrayVerif[1];
       inner0.style.backgroundColor = "red";
     }
     unContact[key] = valeur;
@@ -74,23 +77,26 @@ function verifForm() {
   }
 }
 
-function estValide(value, key) {
-  let regle = /^[a-zA-Z]{1}[A-Za-z'àáâãäåçèéêëìíîïðòóôõöùúûüýÿ -._\s]*$/;
-  if (key == "city") {
-    regle = /^\d{5}$/;
-  }
-  //manque...
-  if (key == "address") {
-    regle = /^[0-9]{1}[A-Za-z-0-9'àáâãäåçèéêëìíîïðòóôõöùúûüýÿ -._\s-]*$/;
-    //([A-Z'àáâãäåçèéêëìíîïðòóôõöùúûüýÿ -._\s-])\w+/g;
-  }
-  if (key == "email") {
-    regle = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-  }
-  return regle.test(value);
+function valider(url, envoiPost) {
+  const options = {
+    method: "POST",
+    body: JSON.stringify(envoiPost),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  fetch(url, options)
+    .then((res) => res.json())
+    .then((res) => {
+      // localStorage.setItem("orderId", res.orderId);
+      window.location = `./confirmation.html?idCommande=${res.orderId}`;
+    })
+    .catch(function (error) {
+      alert("Impossible d'envoyer la requête");
+    });
 }
 
-function valider(url, envoiPost) {
+function valider_old(url, envoiPost) {
   const options = {
     method: "POST",
     body: JSON.stringify(envoiPost),

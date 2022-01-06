@@ -20,21 +20,17 @@
   </head>
 
   <body>
-    <button onclick="localStorage.clear();">raz</button>
+  
     <header id="header">
-      <nav>
-        <a href="param.html"><li>paramètres</li></a>
-        <a href="./index.html"><li>Accueil</li></a>
-        <a href="./cart.html"><li>Panier</li></a>
-        <a href="../temp/cart2.html"><li>Panier2</li></a>
-      </nav>
+     
     </header>
 
     <main class="limitedWidthBlockContainer">
       <div class="limitedWidthBlock">
        
         <section class="item" id="theItem">
-          <article></article>
+         
+         
         </section></main>
     <!-- template -->
     <template id="templateArticle">
@@ -46,7 +42,7 @@
           <div class="item__content__titlePrice">
             <h1 id="title"><!-- Nom du produit -->titi</h1>
             <p>
-              Prix : <span id="price"><!-- 42 --></span>€
+              Prix : <span id="price"><!-- 42 --></span>
             </p>
           </div>
 
@@ -74,13 +70,16 @@
                 name="itemQuantity"
                 min="1"
                 max="100"
-                value="1"
+                value="0"
                 id="itemQuantity"
-              /><!-- remmettre à 0 -->
+              /><!-- value= 0 ou 1 remmettre à 0 -->
           <!--   </div> liste synthétique: <input type="checkbox" id="myCheck">
-liste synthétique: <input type="checkbox" id="myCheck"> -->
-            <div id="lesCdes">
-              
+liste synthétique: <input type="checkbox" id="myCheck"> 
+-->
+           
+               <div id="lesCdes">
+                 
+                
            
           </div>
 
@@ -91,7 +90,17 @@ liste synthétique: <input type="checkbox" id="myCheck"> -->
         </div>
       </article>
     </template>
+    <template id="templateLines">
+      <div>
+        <h3>Votre commande :</h3> <ul>
+        
+        </ul>
+        <h4 id ="leTotal">Total : <span id="qte_totale">23</span>
+          article(s), montant : <span id=prix_total> 50€</span></h4>
+        </div>
+    </template>
     
+   
     <footer id="footer"></footer>
     <script  src="../js/commun.js"></script>
 

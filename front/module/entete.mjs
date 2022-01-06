@@ -1,4 +1,8 @@
 //import * as myParam from "../module/parametres.js";
+/**Module  pour l'affichage des head et footer
+ * et pour tenir compte des la structures des fichiers dans les
+ * dossiers...
+ */
 const leFolder = "front";
 const adresse = {
   nom: "kanap",
@@ -10,7 +14,7 @@ const adresse = {
     "© Copyright 2021 - 2042 | Openclassrooms by Openclassrooms | All Rights Reserved | Powered by &lt;3",
   latitude: 48.82,
   longitude: 2.29,
-  messageMail: "Vous_avez_besoin_d_un_crédit",
+  messageMail: "Vous_avez_besoin_d_un_crédit ?",
 };
 
 function ecrireHeaderFooter() {

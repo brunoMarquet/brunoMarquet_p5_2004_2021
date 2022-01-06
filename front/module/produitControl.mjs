@@ -1,17 +1,17 @@
 /*
 separer les données statiques (le descriptif produit) et le panier 
-perdu un temps fou à vouloir synthetiser les 2 !
+j'ai perdu un temps fou à vouloir synthetiser les 2 !
 
 */
 import * as moduleEntete from "../module/entete.mjs";
-import * as moduleCart from "../module/gestion.js";
-import * as moduleEdit from "../module/productEdit.js";
+
+import * as moduleEdit from "../module/produitEdit.mjs";
+import * as moduleCart1 from "../module/cartPanier.mjs";
 let theId = 0;
 //localStorage.clear();
+//import * as moduleCart from "../module/produitCart.mjs";
 
-initLeProduit();
-
-function initLeProduit() {
+function initproduit() {
   const urlParams = new URLSearchParams(window.location.search);
   const product_id = urlParams.get("id");
   const url = "http://localhost:3000/api/products/" + product_id;
@@ -34,60 +34,69 @@ function initLeProduit() {
 function afficheProd(product) {
   //unProduct = new moduleCart.leProd(product._id, product.colors, product.price);
   theId = product._id;
-
-  // moduleCart.initProd(product);
   document.title = product.name;
 
-  /*Ecriture du produit lambda
-seulemenent ensuite on regarde ce qui est déjà commandé */
-
+  /*Ecriture du produit lambda*/
+  const lesLignes = moduleCart1.lePanier[theId];
+  //
+  // debugger;
   const fragment = moduleEdit.ecrireTemplate(product);
   document.getElementById("theItem").appendChild(fragment);
-  if (moduleCart.lePanier[theId]) {
-    //recherche commandes
 
-    moduleEdit.editLignesCde(moduleCart.lePanier[theId]);
+  /*seulemenent ensuite on regarde ce qui est déjà commandé 
+  recherche commandes
+  */
+  if (moduleCart1.lePanier[theId]) {
+    //const fragment1 =
+    moduleEdit.editLignesCde(moduleCart1.lePanier[theId]);
+    // document.getElementById("test11").appendChild = fragment1;
+    //moduleEdit.editLignesCde(moduleCart1.lePanier[theId]);
   }
 
-  //"instanciation" de script
+  /* "instanciation" de script addEventListener
+   */
 
   document
     .getElementById("color-select")
     .addEventListener("change", function () {
       changeColor(this.value);
     });
-  document
+  /*  document
     .getElementById("itemQuantity")
     .addEventListener("change", function () {
       changeQty(this.value);
-    });
+    }); */
 
   document.getElementById("addToCart").addEventListener("click", ajoutPanier);
 }
 
-function changeQty(qte) {
-  return;
+function changeColor(indiceColor) {
+  const qte = moduleCart1.checkLine(theId, indiceColor);
+  moduleEdit.actuQty(qte);
 }
-
-function checkLine(indiceColor) {
-  return;
-}
+//function changeQty(newQty) {}
 
 /* actualiser si besoin le nbre en fonction de la couleur */
-function changeColor(indiceColor) {
+/* function AfficheColor(indiceColor) {
+  console.log(indiceColor);
+  moduleEdit.changeColor(indiceColor);
   return;
-}
+} */
 
 function ajoutPanier() {
   const qte1 = document.getElementById("itemQuantity").value;
-  const qteVerif = nombreValide(qte1);
+  const qteVerif = nombreValide1(qte1);
   const couleur = document.getElementById("color-select").value;
   if (qteVerif != -1 && couleur != -1) {
-    const lesLines = moduleCart.commander(theId, qteVerif, couleur);
+    const lesLines = moduleCart1.commander(theId, couleur, qteVerif);
     if (Object.keys(lesLines).length != 0) {
       moduleEdit.editLignesCde(lesLines);
+    } else {
+      console.log("panner vide");
+      moduleEdit.razLignes();
     }
   } else {
     console.log("Erreur");
   }
 }
+export { initproduit };

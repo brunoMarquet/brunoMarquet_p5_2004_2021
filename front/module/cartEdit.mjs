@@ -1,17 +1,26 @@
+/**module d'écriture html
+ * c'est du templating pour l'edition initiale
+ * (2 templates et 3 fonctions mises en oeuvres)
+ * et du innerhtml
+ * -pour le "total"
+ *
+ * -et l'actualisation du panier avec 4 mini fonctions tres ciblées ou précises.
+ *
+ *
+ */
+
 import * as moduleControl from "../module/cartControl.mjs";
 
-let qteTotal = 0;
-let prixTotal = 0;
 const innerLigne = document.getElementById("templateLigne");
 const innertotal = [];
 innertotal[0] = document.getElementById("totalQuantity");
 innertotal[1] = document.getElementById("totalPrice");
 
-function ecrirePanier(tableCdes, listeProduit, lePanier) {
+function ecrirePanier(tableCdes) {
   const arrayPanier = tableCdes[0];
   const arrayTotal = tableCdes[1];
   let fragmentSomme = new DocumentFragment();
-  let fragmentArticle = new DocumentFragment();
+
   for (const theItem of arrayPanier) {
     //console.log(theItem[0][0].name);
     //const unProduct = theItem[0][0];
@@ -61,12 +70,10 @@ function templateArticle(theItem) {
   prixArticle.id = "prix_" + l_Id;
   prixArticle.value = unPu;
 
+  /* pour lancer l'écriture des lignes de couleur */
   const lesLignes = clone.querySelector("#lesCouleurs");
-
   const fragLignes = ecrireLesLignes(l_Id, theItem);
-
   lesLignes.appendChild(fragLignes);
-
   fragmentArticle.appendChild(clone);
   return fragmentArticle;
 }
@@ -75,6 +82,7 @@ function ecrireLesLignes(unId, theItem) {
   //return;
   let fragmentSom = new DocumentFragment();
   for (let i = 1; i < theItem.length; i++) {
+    /**pour chaque couleur... */
     fragmentSom.appendChild(ecrireUneLigne(unId, theItem[i]));
   }
 
@@ -124,40 +132,52 @@ function ecrireUneLigne(unId, arrayLigne) {
   fragment1.appendChild(cloneLigne);
   return fragment1;
 }
+
+/*écriture total de la commande*/
 function modifTotal(qte, total) {
-  //debugger;
   innertotal[0].innerHTML = qte;
   innertotal[1].innerHTML = total;
 }
 
 /******************************
  * *fonctions innerHTML appellées par la fonction : actuEcran
-depuis le module Controleur !
- * -pour modif le html
+depuis le module Controleur -pour modifier le html !
+lorsque l'on modifie un article: 2 fonctions utilisées  
+ - modifArticle(id, qtArticle, prixArticle) 
+ - modifLigne(id, idColor, newQty, prixLigne) 
+ mais il n'est pas judicieux de les réunir car bcq de parmetres
+
+ * 
  */
 function razLigne(unId, color) {
   document.getElementById(`ligne_${unId}_${color}`).innerHTML = "";
 }
 function razArticle(id) {
-  document.getElementById("article_" + id).innerHTML = "";
+  const htmlArticle = document.getElementById("article_" + id);
+  htmlArticle.innerHTML = "";
+  /**Car petit bug visuel causé par la class */
+  htmlArticle.classList = [];
+  /**ou moins violent:
+   *  htmlArticle.classList.remove("cart__item");
+   */
 }
 
 function modifArticle(id, qtArticle, prixArticle) {
   document.getElementById("qte_" + id).innerHTML = qtArticle;
-  document.getElementById("prix_" + id).innerHTML = prixArticle.toFixed(2);
+  document.getElementById("prix_" + id).innerHTML = prixArticle;
 }
 function modifLigne(id, idColor, newQty, prixLigne) {
   document.getElementById("inQte_" + id + "_" + idColor).innerHTML = newQty;
   document.getElementById("inQty_" + id + "_" + idColor).value = newQty;
   document.getElementById("lignePrix_" + id + "_" + idColor).innerHTML =
-    prixLigne.toFixed(2);
+    prixLigne;
 }
 
 export {
   ecrirePanier,
+  modifTotal,
   razLigne,
   razArticle,
   modifArticle,
   modifLigne,
-  modifTotal,
 };

@@ -5,7 +5,7 @@
  */
 
 import * as moduleEntete from "../module/entete.mjs";
-import * as myParam from "../module/parametres.js";
+import * as myParam from "../module/parametres.mjs";
 import * as moduleEdit from "../module/cartEdit.mjs";
 import * as moduleCart from "../module/cartPanier.mjs";
 import * as moduleForm from "../module/cartForm.mjs";
@@ -34,13 +34,9 @@ function afficheCommandes() {
       })
       .then((products) => {
         const tableCdes = moduleCart.preparePanier(products);
-        const fragment = moduleEdit.ecrirePanier(
-          tableCdes,
-          products,
-          moduleCart.lePanier
-        );
+        const fragment = moduleEdit.ecrirePanier(tableCdes);
 
-        console.log(tableCdes);
+        //console.log(tableCdes);
 
         /* const fragment = moduleEdit.ecrirePanier(
           moduleCart.preparePanier(products)
@@ -72,7 +68,7 @@ function checkModifQty(unId, indicecolor, qte) {
   if (qte) {
     const qteVerif = nombreValide2(qte);
 
-    if (qteVerif != -1 && qteVerif < 100) {
+    if (qteVerif != -1 && qteVerif <= maxProduit) {
       moduleCart.modifQty(unId, indicecolor, qteVerif);
     } else {
       console.log(
@@ -82,14 +78,15 @@ function checkModifQty(unId, indicecolor, qte) {
   }
 }
 
-// ajout commentaire
 function ajouterUn(unId, color, sens) {
-  const newQte = parseInt(moduleCart.lePanier[unId][color] + sens);
-  if (newQte < 100) {
+  //const newQte = parseInt(moduleCart.lePanier[unId][color] + sens);
+  const newQte = parseInt(moduleCart.getQty(unId, color, sens));
+  //a modif
+  if (newQte <= maxProduit) {
     moduleCart.modifQty(unId, color, newQte);
   } else {
     //newQte est tjrs =100!
-    console.log("Erreur:  " + newQte + "  est  >=100");
+    console.log("Erreur:  " + newQte + "  est  >= " + maxProduit);
   }
 }
 function deleteArticle(unId) {

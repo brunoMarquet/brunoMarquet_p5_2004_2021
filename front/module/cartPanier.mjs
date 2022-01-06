@@ -1,27 +1,39 @@
 import * as moduleControl from "../module/cartControl.mjs";
 let lePanier;
-let arrayTotal = [];
-let qteTotal = 0;
-let prixTotal = 0;
 let lesPrix = {};
-import * as moduleEdit from "./cartEdit.mjs";
 
-//const innerLigne = document.getElementById("templateLigne");
+/**lesPrix est un objet {id: prix€} redondant ?
+ * pour eviter de recharger à chaque fois le prix !
+ */
+
 lePanier = JSON.parse(localStorage.getItem("panier")) ?? {};
 
 function preparePanier(listeProduit) {
   /*
-   * [[le canapé,pu,qtetotal,prixtotal],[idcolor,textcolor,qt,prix lignecolor]],[idcolor2,textcolor2,qt2,lignecolor2]]
+  on renvoi au controleur un array de 2 array
+  A  le premier : arrayCart
+   * =[[le canapé,pu,qtetotal,prixtotal],
+  [[idcolor1,textcolor1,qt1,prix lignecolor1]],[idcolor2,textcolor2,qt2,lignecolor2]]]
+  c'est à dire :
+ - array[0] : carateristiques de l'article et prix total 
+  - array[1] : array de x couleurs et avec pour chacune les carateristiques de la ligne 
+
+ B  le deuxieme : arrayTotal
+ avec juste  qteTotal et prixTotal;
+
    */
 
   let arrayCart = [];
+  let arrayTotal = [];
+  let qteTotal = 0;
+  let prixTotal = 0;
 
   for (const [unId, lignes] of Object.entries(lePanier)) {
     let arrayProduit = ["fictif"];
     let arrayProd = [];
 
     const leProduit = getProdPanier(unId, listeProduit);
-    const lePrix = formaterPrix(1, leProduit.price);
+    const lePrix = leProduit.price;
 
     lesPrix[leProduit._id] = lePrix; // réutilisé ds le module
     let QteModele = 0;
@@ -33,20 +45,26 @@ function preparePanier(listeProduit) {
         idcolor,
         textColor,
         qte,
-        formaterPrix(100 * qte, lePrix),
+        formatPrix(qte * lePrix),
+        //formaterPrix(100 * qte, lePrix),
       ];
       arrayProduit.push(arrayLigne);
     }
     //pour chaque article
     qteTotal += QteModele;
-    const prixAdd = formaterPrix(100 * QteModele, lePrix);
     prixTotal += QteModele * lePrix;
+    // const prixAdd = formaterPrix(100 * QteModele, lePrix);
 
-    arrayProd = [leProduit, lePrix, QteModele, prixAdd];
+    arrayProd = [
+      leProduit,
+      formatPrix(leProduit.price),
+      QteModele,
+      formatPrix(QteModele * lePrix),
+    ];
     arrayProduit[0] = arrayProd;
     arrayCart.push(arrayProduit);
   }
-  prixTotal = formaterPrix(100, prixTotal);
+  prixTotal = formatPrix(prixTotal);
   arrayTotal = [qteTotal, prixTotal];
 
   //debuggerPanier(arrayTotal);
@@ -63,6 +81,9 @@ function preparePanier(listeProduit) {
 }
 
 function getProdPanier(unId, lesProduits) {
+  /**pour retouver les infos sur l'articles
+   * on retourne l'item de l'API
+   */
   for (let j = 0; j < lesProduits.length; j++) {
     if (lesProduits[j]._id == unId) {
       return lesProduits[j];
@@ -72,26 +93,58 @@ function getProdPanier(unId, lesProduits) {
   return {};
 }
 
+function commander(leId, couleur, qte) {
+  if (lePanier[leId]) {
+    //modification
+    if (lePanier[leId][couleur]) {
+      /*on se retrouve dans le cas du cart /panier avec un return 
+      de fonction inutile ici*/
+      const quiSertPas = modifPanier(leId, couleur, qte);
+    } else {
+      // on ajoute une couleur
+      lePanier[leId][couleur] = qte;
+    }
+  } else {
+    //ajout un produit
+    lePanier[leId] = {}; // couleur: qte };
+    lePanier[leId][couleur] = qte;
+  }
+  actuStorage();
+  if (lePanier[leId]) {
+    return lePanier[leId];
+  } else {
+    return {};
+  }
+}
 function modifPanier(id, color, qteVerif) {
   if (qteVerif > 0) {
+    /* on actualise la ligne du panier! */
     lePanier[id][color] = qteVerif;
   } else {
     /* on delete  la ligne ! */
     delete lePanier[id][color];
     /* on delete  l'article si besoin'! */
     if (Object.keys(lePanier[id]).length == 0 || color == -1) {
+      /*le test  ou "color == -1" est ici pour intercepter:
+        la touche "suppression de l'article....*/
+
+      /* on delete le panier ou la commande si besoin ! */
       delete lePanier[id];
       delete lesPrix[id];
+
+      /**indice couleur négatif
+       */
       color = -1;
     }
     if (lePanier == 0) {
-      console.log("panier vide");
       lePanier = {};
     }
   }
   return color;
 }
-/**déclenchée apres modif du panier*/
+/**déclenchée apres modif du panier
+ * on return un array(cf. explication dans cartEdit.mjs)
+ */
 function actuEcran(id, idColor, newQty) {
   let qteP = 0;
   let prixP = 0;
@@ -104,11 +157,10 @@ function actuEcran(id, idColor, newQty) {
     }
     const prixArticle = qtArticle * pu;
     const prixLigne = newQty * pu;
-
     if (id == unId) {
       if (newQty > 0) {
-        moduleControl.modifArticle(unId, qtArticle, prixArticle);
-        moduleControl.modifLigne(unId, idColor, newQty, prixLigne);
+        moduleControl.modifArticle(unId, qtArticle, formatPrix(prixArticle));
+        moduleControl.modifLigne(unId, idColor, newQty, formatPrix(prixLigne));
       }
       if (newQty == 0 && qtArticle != 0) {
         moduleControl.modifArticle(unId, qtArticle, prixArticle);
@@ -118,25 +170,42 @@ function actuEcran(id, idColor, newQty) {
     qteP += qtArticle;
     prixP += prixArticle;
   }
-  /**id nest plus présent dans le panier donc... */
+  /*id nest plus présent dans le panier donc... */
   if (idColor == -1) {
     moduleControl.razArticle(id);
   }
-
-  moduleControl.modifTotal(qteP, prixP.toFixed(2));
+  /*dans tous les cas de figure...on actualise le total */
+  moduleControl.modifTotal(qteP, formatPrix(prixP));
 }
 
 function modifQty(id, color, qteVerif) {
   const color2 = modifPanier(id, color, qteVerif);
-  //ordre a inverser ??
-  actuEcran(id, color2, qteVerif);
+  /**
+   * si on annule un article: on l'efface du panier, donc il faut
+   * trouver une "astuce" pour aller l'éffacer de l'ecran :
+   * c'est : color=-1
+   */
   actuStorage();
+  actuEcran(id, color2, qteVerif);
 }
 function actuStorage() {
   /*  console.log(lePanier);
-  console.log("---------lePanier");
-  console.log(JSON.stringify(lePanier)); */
+ console.log(JSON.stringify(lePanier)); */
+
   localStorage.setItem("panier", JSON.stringify(lePanier));
 }
+function getQty(unId, color, sens) {
+  return lePanier[unId][color] + sens;
+}
+function checkLine(leId, idColor) {
+  let qty = 0;
+  if (lePanier[leId]) {
+    //modification
+    if (lePanier[leId][idColor]) {
+      qty = lePanier[leId][idColor];
+    }
+  }
+  return qty;
+}
 
-export { lePanier, preparePanier, modifQty };
+export { lePanier, preparePanier, checkLine, commander, modifQty, getQty };
