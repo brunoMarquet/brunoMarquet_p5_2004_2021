@@ -21,19 +21,21 @@ import * as moduleEntete from "../module/entete.mjs";
 initConfirm();
 function initConfirm() {
   moduleEntete.ecrireHeaderFooter();
+  /**a l'ancienne ! 
   const Numcde = document.URL.split("idCommande=")[1];
+  */
+  const urlParams = new URLSearchParams(window.location.search);
+  const Numcde = urlParams.get("idCommande");
 
   if (Numcde) {
     const regle = /^[0-9a-fA-F-]*$/;
     const testHexa = estValide(Numcde, regle);
-    if (testHexa) {
-      // console.log(Numcde.toString());
-      // console.log(regle.test(Numcde));
 
+    if (!testHexa) {
+      erreurCommande();
+    } else {
       document.getElementById("orderId").innerHTML = "<br/>" + Numcde;
     }
-  } else {
-    erreurCommande();
   }
 }
 

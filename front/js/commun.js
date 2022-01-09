@@ -27,13 +27,13 @@ function estValide(value, regle) {
 /**fonction standart qui marche !
  * qui est appelée en formatPrix...
  */
-function formatPrix2(prix) {
-  const prix2 = new Intl.NumberFormat("fr-FR", {
+function formatPrix__(prix) {
+  prix = new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
   }).format(prix / 100);
 
-  return prix2;
+  return prix;
 }
 
 /**___________________________________________ */
@@ -68,33 +68,4 @@ function formatPrix(prix) {
 }
 function editErreur(erreur) {
   console.log("Ressource non trouvée, erreur : " + erreur);
-}
-
-function formatPrix2(prix) {
-  /**pas prévu pour le million ! */
-  //debugger;
-  const millierSep = " ";
-  const decimalSep = ",";
-  let entier = parseInt(prix);
-
-  const decimal = parseInt(100 * prix - 100 * entier);
-  let lesCent = decimalSep + decimal;
-  if (decimal == 0) {
-    lesCent = "";
-  }
-  if (decimal < 10) {
-    lesCent = decimalSep + "0" + decimal;
-  }
-  //decimal == 0 ? (decimal = "") : (decimal = decimalSep + decimal);
-  //ou ci desssous mais pas tres lisible!:
-  //decimal = decimal == 0 ? "" : decimalSep + decimal;
-
-  entier = entier.toString();
-  const nbrChiffre = entier.length - 3;
-
-  if (nbrChiffre > 0) {
-    entier =
-      entier.slice(0, nbrChiffre) + millierSep + entier.slice(nbrChiffre);
-  }
-  return entier + lesCent + " €";
 }

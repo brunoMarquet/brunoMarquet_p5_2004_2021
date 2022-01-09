@@ -59,7 +59,6 @@ function verifForm() {
     const inner1 = document.getElementById(key + "ErrorMsg");
 
     if (estValide(valeur, regle)) {
-      // console.log(valeur + "PARFAIT ok");
       inner1.innerHTML = "";
       inner0.style.backgroundColor = "green";
     } else {
@@ -88,14 +87,18 @@ function valider(url, envoiPost) {
   fetch(url, options)
     .then((res) => res.json())
     .then((res) => {
-      // localStorage.setItem("orderId", res.orderId);
-      window.location = `./confirmation.html?idCommande=${res.orderId}`;
+      if (res.orderId) {
+        // localStorage.setItem("orderId", res.orderId);
+        window.location = `./confirmation.html?idCommande=${res.orderId}`;
+      } else {
+        alert("cde id nulle");
+      }
     })
     .catch(function (error) {
       alert("Impossible d'envoyer la requête");
     });
 }
-
+/* 
 function valider_old(url, envoiPost) {
   const options = {
     method: "POST",
@@ -109,14 +112,13 @@ function valider_old(url, envoiPost) {
     .then((res) => {
       //let order = JSON.stringify(res);
       //console.log(order);
-      // console.log("Cde  : " + res.orderId);
-      localStorage.setItem("orderId", res.orderId);
+      console.log("Cde  TTT: " + res.orderId);
+      //localStorage.setItem("orderId", res.orderId);
       window.location = "./confirmation.html";
     })
     .catch(function (error) {
       alert("Impossible d'envoyer la requête");
     });
-}
+} */
 
-// Export a Module
 export { ecrireFormulaire, testOrder };

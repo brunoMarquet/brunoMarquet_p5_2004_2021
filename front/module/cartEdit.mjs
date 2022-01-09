@@ -22,11 +22,8 @@ function ecrirePanier(tableCdes) {
   let fragmentSomme = new DocumentFragment();
 
   for (const theItem of arrayPanier) {
-    //console.log(theItem[0][0].name);
-    //const unProduct = theItem[0][0];
     const fragmentArticle = templateArticle(theItem);
     fragmentSomme.appendChild(fragmentArticle);
-    //console.log(theItem[0][1]);
   }
 
   modifTotal(arrayTotal[0], arrayTotal[1]);
@@ -107,7 +104,7 @@ function ecrireUneLigne(unId, arrayLigne) {
 
   const supprimer = cloneLigne.querySelector(".supLigne");
   supprimer.addEventListener("click", function () {
-    moduleControl.deleteLigne(unId, indiceColor, 0);
+    moduleControl.deleteLigne(unId, indiceColor);
   });
   const btM = cloneLigne.querySelector("#btonMoins");
   btM.addEventListener("click", function () {

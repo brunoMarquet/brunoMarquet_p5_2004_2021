@@ -8,7 +8,7 @@ const unClient = {
   firstName: {
     type: "string",
     entete: "Votre prénom !",
-    pholder: "mettre son prénom SVP.. ",
+    pholder: "mettre son prénom SVP... ",
     leRegex: /^[a-zA-Z]{1}[A-Za-z'àáâãäåçèéêëìíîïðòóôõöùúûüýÿ -._\s]*$/,
     UnMessage:
       "Votre prénom ne peut pas contenir de chiffres ou des signes tel que (, ° +} et doit commencer par une lettre non accentuée etc ...",
@@ -29,15 +29,15 @@ const unClient = {
     pholder: "Merci de renseigner votre adresse.. ",
     leRegex: /^[0-9]{1}[A-Za-z-0-9'àáâãäåçèéêëìíîïðòóôõöùúûüýÿ -._\s-]*$/,
     UnMessage: "Votre adresse ... doit commencer par un chiffre",
-    exemple: "A148 rue des Martyrs",
+    exemple: "148 rue des Martyrs",
   },
   city: {
     type: "number",
     entete: "Votre code postal (5 chiffres exactement!)",
-    pholder: "Ca alors ! vous avez un code postal SVP ?",
+    pholder: "Ça alors ! vous avez un code postal SVP ?",
     leRegex: /^\d{5}$/,
-    UnMessage: " code postal doit etre composé de 5 chiffres exactement !",
-    exemple: 75019,
+    UnMessage: "le code postal doit  être composé de 5 chiffres exactement !",
+    exemple: "750190",
   },
   email: {
     type: "email",

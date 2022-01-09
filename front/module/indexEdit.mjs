@@ -8,7 +8,6 @@ let templateProduit = document.getElementById("produitTemplate");
 //pour éviter une recherche dans document by id .. à chaque boucle.
 
 function ecrireListe(listeProduit) {
-  console.log("Index :  " + listeProduit.length);
   let fragmentSom = new DocumentFragment();
   for (let element of listeProduit) {
     fragmentSom.appendChild(ecrireUnProduit(element));

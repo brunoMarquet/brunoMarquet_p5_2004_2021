@@ -29,37 +29,18 @@ function afficheCommandes() {
     const url = "http://localhost:3000/api/products";
     fetch(url, { method: "GET" })
       .then((data) => {
-        console.log(data.ok + "," + data.status);
+        //console.log(data.ok + "," + data.status);
         return data.json();
       })
       .then((products) => {
         const tableCdes = moduleCart.preparePanier(products);
         const fragment = moduleEdit.ecrirePanier(tableCdes);
 
-        //console.log(tableCdes);
-
-        /* const fragment = moduleEdit.ecrirePanier(
-          moduleCart.preparePanier(products)
-        ); */
-
         document.getElementById("cart__items").appendChild(fragment);
-
-        /*const fragment = moduleEdit.ecrirePanier(
-          moduleCart.preparePanier(products)
-        );*/
-
-        //const arrayPanier = moduleCart.preparePanier(products);
-        //moduleEdit.ecrirePanier(moduleCart.preparePanier(products));
-
-        //document.getElementById("cart__items").appendChild(fragment);
-
-        //moduleCart.actuPrix(moduleEdit.lesPrix);
-        //moduleEdit.lesPrix = {}; //pour etre clair!
       })
 
       .catch(function (error) {
         console.log("erreur : " + error);
-        //moduleProduit.editErreur(error);
       });
   }
 }
@@ -72,7 +53,10 @@ function checkModifQty(unId, indicecolor, qte) {
       moduleCart.modifQty(unId, indicecolor, qteVerif);
     } else {
       console.log(
-        "Erreur:  " + qte + "  n'est pas un entier positif ou est >=100"
+        "Erreur:  " +
+          qte +
+          "  n'est pas un entier positif ou est >=" +
+          maxProduit
       );
     }
   }
@@ -89,7 +73,10 @@ function ajouterUn(unId, color, sens) {
     console.log("Erreur:  " + newQte + "  est  >= " + maxProduit);
   }
 }
+/**pour clore le débat ou eviter de se tromper à froid toutes les fonction ci
+ * dessous sont des "répétiteurs" "interfaces mvc "et "n'apportent rien" */
 function deleteArticle(unId) {
+  // a virer ? NON car mvc..
   moduleCart.modifQty(unId, -1, 0);
 }
 function deleteLigne(unId, uneColor) {
@@ -113,7 +100,7 @@ function modifTotal(qte, total) {
   moduleEdit.modifTotal(qte, total);
 }
 
-//bof
+/*ici seulement pour poyuvoir preRemplir ou non le form donc ? */
 function afficheLeFormulaire() {
   const preRemplir = document.getElementById("remplir").checked ? 1 : 0;
   const rep = moduleForm.ecrireFormulaire(preRemplir, myParam.unClient);

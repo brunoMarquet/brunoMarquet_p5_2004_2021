@@ -4,14 +4,13 @@ j'ai perdu un temps fou à vouloir synthetiser les 2 !
 
 */
 import * as moduleEntete from "../module/entete.mjs";
-
 import * as moduleEdit from "../module/produitEdit.mjs";
 import * as moduleCart1 from "../module/cartPanier.mjs";
 let theId = 0;
 //localStorage.clear();
 //import * as moduleCart from "../module/produitCart.mjs";
 
-function initproduit() {
+function initProduit() {
   const urlParams = new URLSearchParams(window.location.search);
   const product_id = urlParams.get("id");
   const url = "http://localhost:3000/api/products/" + product_id;
@@ -47,20 +46,17 @@ function afficheProd(product) {
   recherche commandes
   */
   if (moduleCart1.lePanier[theId]) {
-    //const fragment1 =
     moduleEdit.editLignesCde(moduleCart1.lePanier[theId]);
-    // document.getElementById("test11").appendChild = fragment1;
-    //moduleEdit.editLignesCde(moduleCart1.lePanier[theId]);
   }
 
   /* "instanciation" de script addEventListener
    */
-
   document
     .getElementById("color-select")
     .addEventListener("change", function () {
       changeColor(this.value);
     });
+
   /*  document
     .getElementById("itemQuantity")
     .addEventListener("change", function () {
@@ -84,19 +80,19 @@ function changeColor(indiceColor) {
 } */
 
 function ajoutPanier() {
-  const qte1 = document.getElementById("itemQuantity").value;
-  const qteVerif = nombreValide1(qte1);
+  const qte = document.getElementById("itemQuantity").value;
+  const qteVerif = nombreValide1(qte);
   const couleur = document.getElementById("color-select").value;
   if (qteVerif != -1 && couleur != -1) {
     const lesLines = moduleCart1.commander(theId, couleur, qteVerif);
     if (Object.keys(lesLines).length != 0) {
       moduleEdit.editLignesCde(lesLines);
     } else {
-      console.log("panner vide");
+      // console.log("panner vide");
       moduleEdit.razLignes();
     }
   } else {
     console.log("Erreur");
   }
 }
-export { initproduit };
+export { initProduit };
