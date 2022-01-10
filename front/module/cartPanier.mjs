@@ -30,21 +30,33 @@ function preparePanier(listeProduit) {
   for (const [unId, lignes] of Object.entries(lePanier)) {
     let arrayProduit = ["fictif"];
     let arrayProd = [];
+    let arraColorIn = [];
 
     const leProduit = getProdPanier(unId, listeProduit);
     //if (Object.keys(leProduit).length !== 0) {
     if (leProduit) {
       const lePrix = leProduit.price;
+      const nbrcolor = leProduit.colors.length;
 
       lesPrix[leProduit._id] = lePrix; // réutilisé ds le module
       let QteModele = 0;
+      //pour chaque couleur:
 
       for (const [idcolor, qte] of Object.entries(lignes)) {
-        //pour chaque couleur:
-        QteModele += qte;
-        const textColor = leProduit.colors[idcolor];
-        const arrayLigne = [idcolor, textColor, qte, formatPrix(qte * lePrix)];
-        arrayProduit.push(arrayLigne);
+        //console.log(arraColorIn); //.indexOf(idcolor));
+        if (arraColorIn.indexOf(idcolor) == -1 && idcolor <= nbrcolor) {
+          arraColorIn.push(idcolor);
+          QteModele += qte;
+          const arrayLigne = [
+            idcolor,
+            leProduit.colors[idcolor],
+            qte,
+            formatPrix(qte * lePrix),
+          ];
+          arrayProduit.push(arrayLigne);
+        } else {
+          console.log("probleme de couleur : " + idcolor);
+        }
       }
       //pour chaque article
       qteTotal += QteModele;
@@ -75,10 +87,14 @@ console.log("color  " + arrayCart[0][1][1]);
 
   return [arrayCart, arrayTotal];
 }
+
 function deleteBetise(fauxArticle) {
   for (let theId of fauxArticle) {
     delete lePanier[theId];
   }
+  reInitCart();
+}
+function reInitCart() {
   if (lePanier == 0) {
     lePanier = {};
   }
@@ -88,7 +104,7 @@ function getProdPanier(unId, lesProduits) {
   /**pour retouver les infos sur l'articles
    * on retourne l'item de l'API
    */
-  console.log(lePanier[unId]);
+
   for (let j = 0; j < lesProduits.length; j++) {
     if (lesProduits[j]._id == unId) {
       return lesProduits[j];
@@ -127,7 +143,10 @@ function modifPanier(id, color, qteVerif) {
     lePanier[id][color] = qteVerif;
   } else {
     /* on delete  la ligne ! */
-    delete lePanier[id][color];
+    if (lePanier[id][color]) {
+      delete lePanier[id][color];
+    }
+
     /* on delete  l'article si besoin'! */
     if (Object.keys(lePanier[id]).length == 0 || color == -1) {
       /*le test  ou "color == -1" est ici pour intercepter:
@@ -142,9 +161,7 @@ function modifPanier(id, color, qteVerif) {
        */
       color = -1;
     }
-    if (lePanier == 0) {
-      lePanier = {};
-    }
+    reInitCart();
   }
   return color;
 }

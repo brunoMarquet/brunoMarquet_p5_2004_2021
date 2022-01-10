@@ -53,13 +53,18 @@ function initIndex() {
 function jeuPanier() {
   if (document.getElementById("jeuEssai").checked) {
     let jsonlePanier = {
-      "055743915a544fde83cfdfc904935ee7": { 2: 4, 0: 2, 1: 5 },
-      "77711f0e466b4ddf953f677d30b0efc9": { 0: 1, 1: 4 },
+      "055743915a544fde83cfdfc904935ee7": { 2: 1, 2: 2, 1: 5, 10: 10 },
+      "77711f0e466b4ddf953f677d30b0efc9": { 0: 5, 1: 4, 0: 3 },
       a6ec5b49bd164d7fbe10f37b6363f9fb: { 3: 1, 0: 1, 1: 4, 2: 1 },
-      a6ec5b49bd164d7fbe10f37b63f9fb: { 0: 20, 1: 10 },
+      bidonb49bd164d7fbe10f37b63f9fb: { 0: 20, 1: 10 },
       Bidon49bd164d7fbe10f37b63f9fb: { 0: 2, 1: 1 },
     };
     localStorage.setItem("panier", JSON.stringify(jsonlePanier));
   }
 }
-/**la 4eme ligne est un FAUX */
+
+/**la 4eme et 5eme ligne sont des FAUX
+ * 1ere ligne caviardée
+ *
+ *
+ */

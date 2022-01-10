@@ -63,7 +63,7 @@ function verifForm() {
       inner0.style.backgroundColor = "green";
     } else {
       cptErreur++;
-      inner1.innerHTML = arrayVerif[1];
+      inner1.innerHTML = arrayVerif[1] + " votre info: " + valeur;
       inner0.style.backgroundColor = "red";
     }
     unContact[key] = valeur;
